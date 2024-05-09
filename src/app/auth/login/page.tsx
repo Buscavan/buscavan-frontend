@@ -29,7 +29,7 @@ export default function LoginPage() {
         </Button>
 
         <p className="text-sm text-muted-foreground text-center">
-          Ao continuar, voce concorda com os Termos de Serviço e Políticas de
+          Ao continuar, você concorda com os Termos de Serviço e Políticas de
           Privacidade
         </p>
       </div>
