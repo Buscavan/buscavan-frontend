@@ -10,10 +10,9 @@ import { z } from 'zod'
 import { Eye, EyeOff, Loader2 } from 'lucide-react'
 
 const loginFormSchema = z.object({
-  cpf: z.string().nonempty('Por favor, informe seu CPF'),
+  cpf: z.string({ required_error: 'Por favor, informe seu CPF' }),
   password: z
-    .string()
-    .nonempty('Por favor, informe sua senha')
+    .string({ required_error: 'Por favor, informe sua senha' })
     .min(6, 'A senha deve ter pelo menos 6 caracteres'),
 })
 
@@ -53,6 +52,7 @@ export function LoginForm() {
             id="password"
             type={ocult ? 'text' : 'password'}
             placeholder="Digite sua senha"
+            className="pr-10"
             {...register('password')}
           />
           <Button
