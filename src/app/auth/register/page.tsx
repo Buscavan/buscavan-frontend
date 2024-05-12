@@ -3,6 +3,10 @@ import { RegisterForm } from './_components/register-form'
 import { Separator } from '@/components/ui/separator'
 import Link from 'next/link'
 
+export const metadata = {
+  title: 'Buscavan - Registro',
+}
+
 export default function RegisterPage() {
   return (
     <section className="p-10 flex justify-center items-center">

@@ -3,7 +3,7 @@ import { SearchForm } from './components/search-form'
 import { TripCard } from './components/trip-card'
 
 export const metadata = {
-  title: 'Buscavans - Início',
+  title: 'Buscavan - Início',
 }
 
 export default function Home() {
