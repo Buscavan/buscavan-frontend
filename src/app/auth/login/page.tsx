@@ -9,11 +9,13 @@ export const metadata = {
 
 export default function LoginPage() {
   return (
-    <section className="p-10 flex justify-center items-center">
-      <div className="max-w-sm w-full flex flex-col items-center space-y-8">
-        <div className="space-y-2 text-center">
-          <h1 className="text-3xl font-bold">Faça Login na Buscavan</h1>
-          <p className="text-muted-foreground">
+    <section className="p-6 flex justify-center items-center">
+      <div className="sm:max-w-sm w-full flex flex-col items-center space-y-6 sm:space-y-8">
+        <div className="space-y-1 sm:space-y-2 text-center">
+          <h1 className="text-2xl sm:text-3xl font-bold">
+            Faça Login na Buscavan
+          </h1>
+          <p className="text-sm sm:text-base text-muted-foreground">
             Preencha os dados abaixo para entrar no sistema
           </p>
         </div>
@@ -32,8 +34,8 @@ export default function LoginPage() {
           <Link href="/auth/register">Cadastre-se em nossa plataforma</Link>
         </Button>
 
-        <p className="text-sm text-muted-foreground text-center">
-          Ao continuar, voce concorda com os Termos de Serviço e Políticas de
+        <p className="text-xs sm:text-sm text-muted-foreground text-center">
+          Ao continuar, você concorda com os Termos de Serviço e Políticas de
           Privacidade
         </p>
       </div>

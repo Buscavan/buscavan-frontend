@@ -8,6 +8,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Eye, EyeOff, Loader2 } from 'lucide-react'
+import { toast } from '@/components/ui/use-toast'
 
 const registerFormSchema = z.object({
   name: z
@@ -36,6 +37,11 @@ export function RegisterForm() {
     await new Promise((resolve) => setTimeout(resolve, 2000))
 
     console.log(data)
+
+    toast({
+      title: `Seja Bem-vindo, ${data.name.split(' ')[0]}!`,
+      description: 'Nós da Buscavan agradecemos a sua visita.',
+    })
   }
 
   return (
@@ -43,7 +49,7 @@ export function RegisterForm() {
       <fieldset className="space-y-0.5">
         <Label htmlFor="name">Nome</Label>
 
-        <Input id="name" placeholder="000.000.000-00" {...register('name')} />
+        <Input id="name" placeholder="Digite seu nome" {...register('name')} />
 
         {errors.name && (
           <p className="text-sm text-red-500">{errors.name.message}</p>
@@ -64,7 +70,7 @@ export function RegisterForm() {
         )}
       </fieldset>
 
-      <div className="flex space-x-4">
+      <div className="flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0">
         <fieldset className="space-y-0.5">
           <Label htmlFor="cpf">CPF</Label>
 
@@ -136,7 +142,7 @@ export function RegisterForm() {
       </fieldset> */}
 
       <Button type="submit" className="w-full" disabled={isSubmitting}>
-        {isSubmitting && <Loader2 className="szie-4 mr-2 animate-spin" />}
+        {isSubmitting && <Loader2 className="size-4 mr-2 animate-spin" />}
         {isSubmitting ? 'Entrando...' : 'Cadastrar-se no Sistema'}
       </Button>
     </form>
