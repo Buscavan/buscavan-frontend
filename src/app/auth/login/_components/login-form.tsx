@@ -8,6 +8,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Eye, EyeOff, Loader2 } from 'lucide-react'
+import { toast } from '@/components/ui/use-toast'
 
 const loginFormSchema = z.object({
   cpf: z.string({ required_error: 'Por favor, informe seu CPF' }),
@@ -30,6 +31,11 @@ export function LoginForm() {
     await new Promise((resolve) => setTimeout(resolve, 2000))
 
     console.log(data)
+
+    toast({
+      title: 'Seja Bem-vindo de Volta!',
+      description: 'Começe a agendar suas viajens o quanto antes.',
+    })
   }
 
   return (
@@ -72,7 +78,7 @@ export function LoginForm() {
       </fieldset>
 
       <Button type="submit" className="w-full" disabled={isSubmitting}>
-        {isSubmitting && <Loader2 className="szie-4 mr-2 animate-spin" />}
+        {isSubmitting && <Loader2 className="size-4 mr-2 animate-spin" />}
         {isSubmitting ? 'Entrando...' : 'Entrar no Sistema'}
       </Button>
     </form>
