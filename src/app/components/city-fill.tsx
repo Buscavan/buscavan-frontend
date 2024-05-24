@@ -39,6 +39,11 @@ interface CityFillProps<TFieldValues extends FieldValues = FieldValues> {
   name: Path<TFieldValues>
 }
 
+interface FillProps {
+  value: string
+  label: string
+}
+
 export function CityFill<TFieldValues extends FieldValues>({
   control,
   name,
@@ -69,7 +74,7 @@ export function CityFill<TFieldValues extends FieldValues>({
                 <CommandEmpty>Nenhuma cidade foi encontrada.</CommandEmpty>
                 {frameworks.length && (
                   <CommandGroup>
-                    {frameworks.map((framework) => (
+                    {frameworks.map((framework: FillProps) => (
                       <CommandItem
                         key={framework.value}
                         value={framework.value}
