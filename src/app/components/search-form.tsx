@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Loader2 } from 'lucide-react'
+import { useToast } from '@/components/ui/use-toast'
 
 const searchFormSchema = z.object({
   origem: z.string().min(1, 'Por favor, informe a cidade de origem'),
@@ -15,19 +16,42 @@ const searchFormSchema = z.object({
   endDate: z.string().min(1, 'Por favor, selecione a data de término'),
 })
 
+const getRandomFutureDate = (daysMin: number, daysMax: number) => {
+  const today = new Date()
+  const randomDays =
+    Math.floor(Math.random() * (daysMax - daysMin + 1)) + daysMin
+  today.setDate(today.getDate() + randomDays)
+  return today.toISOString().substring(0, 10)
+}
+
 export function SearchForm() {
+  const today = new Date().toISOString().substring(0, 10)
+  const endDate = getRandomFutureDate(10, 20)
+
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<z.infer<typeof searchFormSchema>>({
     resolver: zodResolver(searchFormSchema),
+    defaultValues: {
+      startDate: today,
+      endDate,
+    },
   })
 
+  const { toast } = useToast()
+
   async function onSubmit(data: z.infer<typeof searchFormSchema>) {
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    await new Promise((resolve) => setTimeout(resolve, 1000))
 
     console.log(data)
+
+    toast({
+      title: 'Busca confirmada',
+      description: 'Separamos os melhores resultados para sua busca',
+    })
   }
 
   return (
@@ -69,6 +93,8 @@ export function SearchForm() {
             id="startDate"
             type="date"
             className="text-zinc-500"
+            min={today}
+            defaultValue={watch('startDate')}
             {...register('startDate')}
           />
           {errors.startDate && (
@@ -82,6 +108,8 @@ export function SearchForm() {
             id="endDate"
             type="date"
             className="text-zinc-500"
+            min={watch('startDate')}
+            defaultValue={watch('endDate')}
             {...register('endDate')}
           />
           {errors.endDate && (
