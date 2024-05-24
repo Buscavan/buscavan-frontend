@@ -43,7 +43,13 @@ export function LoginForm() {
       <fieldset className="space-y-0.5">
         <Label htmlFor="cpf">CPF</Label>
 
-        <Input id="cpf" placeholder="000.000.000-00" {...register('cpf')} />
+        <Input
+          id="cpf"
+          type="number"
+          placeholder="000.000.000-00"
+          className="remove-arrow"
+          {...register('cpf')}
+        />
 
         {errors.cpf && (
           <p className="text-sm text-red-500">{errors.cpf.message}</p>
@@ -79,7 +85,7 @@ export function LoginForm() {
 
       <Button type="submit" className="w-full" disabled={isSubmitting}>
         {isSubmitting && <Loader2 className="size-4 mr-2 animate-spin" />}
-        {isSubmitting ? 'Entrando...' : 'Entrar no Sistema'}
+        {isSubmitting ? 'Entrando...' : 'Entrar na plataforma'}
       </Button>
     </form>
   )
