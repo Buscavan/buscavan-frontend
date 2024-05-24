@@ -1,19 +1,30 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Loader2 } from 'lucide-react'
 import { useToast } from '@/components/ui/use-toast'
+import { CityFill } from './city-fill'
+import { DatePicker } from './date-picker'
 
 const searchFormSchema = z.object({
   origem: z.string().min(1, 'Por favor, informe a cidade de origem'),
   destino: z.string().min(1, 'Por favor, informe a cidade de destino'),
-  startDate: z.string().min(1, 'Por favor, selecione a data de início'),
-  endDate: z.string().min(1, 'Por favor, selecione a data de término'),
+  startDate: z
+    .date()
+    .nullable()
+    .refine((val) => val !== null, {
+      message: 'Por favor, selecione a data de início',
+    }),
+  endDate: z
+    .date()
+    .nullable()
+    .refine((val) => val !== null, {
+      message: 'Por favor, selecione a data de término',
+    }),
 })
 
 const getRandomFutureDate = (daysMin: number, daysMax: number) => {
@@ -21,23 +32,24 @@ const getRandomFutureDate = (daysMin: number, daysMax: number) => {
   const randomDays =
     Math.floor(Math.random() * (daysMax - daysMin + 1)) + daysMin
   today.setDate(today.getDate() + randomDays)
-  return today.toISOString().substring(0, 10)
+  return today
 }
 
 export function SearchForm() {
-  const today = new Date().toISOString().substring(0, 10)
-  const endDate = getRandomFutureDate(10, 20)
+  const today = new Date()
 
   const {
-    register,
     handleSubmit,
     watch,
+    control,
     formState: { errors, isSubmitting },
   } = useForm<z.infer<typeof searchFormSchema>>({
     resolver: zodResolver(searchFormSchema),
     defaultValues: {
       startDate: today,
-      endDate,
+      endDate: getRandomFutureDate(10, 20),
+      origem: '',
+      destino: '',
     },
   })
 
@@ -64,22 +76,14 @@ export function SearchForm() {
       <div className="flex space-x-4">
         <fieldset className="space-y-0.5 flex-1">
           <Label htmlFor="origem">Origem</Label>
-          <Input
-            id="origem"
-            placeholder="Lençóis Paulista, SP"
-            {...register('origem')}
-          />
+          <CityFill control={control} name="origem" />
           {errors.origem && (
             <p className="text-sm text-red-500">{errors.origem.message}</p>
           )}
         </fieldset>
         <fieldset className="space-y-0.5 flex-1">
           <Label htmlFor="destino">Destino</Label>
-          <Input
-            id="destino"
-            placeholder="Campos do Jordão, SP"
-            {...register('destino')}
-          />
+          <CityFill control={control} name="destino" />
           {errors.destino && (
             <p className="text-sm text-red-500">{errors.destino.message}</p>
           )}
@@ -89,13 +93,10 @@ export function SearchForm() {
       <div className="flex space-x-4">
         <fieldset className="space-y-0.5 flex-1">
           <Label htmlFor="startDate">De</Label>
-          <Input
-            id="startDate"
-            type="date"
-            className="text-zinc-500"
-            min={today}
-            defaultValue={watch('startDate')}
-            {...register('startDate')}
+          <DatePicker
+            control={control}
+            name="startDate"
+            minDate={today.toISOString().substring(0, 10)}
           />
           {errors.startDate && (
             <p className="text-sm text-red-500">{errors.startDate.message}</p>
@@ -104,13 +105,10 @@ export function SearchForm() {
 
         <fieldset className="space-y-0.5 flex-1">
           <Label htmlFor="endDate">Até</Label>
-          <Input
-            id="endDate"
-            type="date"
-            className="text-zinc-500"
-            min={watch('startDate')}
-            defaultValue={watch('endDate')}
-            {...register('endDate')}
+          <DatePicker
+            control={control}
+            name="endDate"
+            minDate={watch('startDate')}
           />
           {errors.endDate && (
             <p className="text-sm text-red-500">{errors.endDate.message}</p>

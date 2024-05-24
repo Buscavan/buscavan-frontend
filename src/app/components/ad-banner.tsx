@@ -12,9 +12,7 @@ export function AdBanner() {
         document.documentElement.scrollHeight - window.innerHeight
       const currentScroll = window.scrollY
 
-      // Adjust fade effect start point and rate here
       if (currentScroll > totalScroll * 0.8) {
-        // Starts fading at 80% scroll
         const newOpacity =
           1 - (currentScroll - totalScroll * 0.8) / (totalScroll * 0.2)
         setOpacity(newOpacity)
