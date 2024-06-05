@@ -35,7 +35,13 @@ const getRandomFutureDate = (daysMin: number, daysMax: number) => {
   return today
 }
 
-export function SearchForm() {
+interface SearchFormProps {
+  title: string
+  subtitle: string
+  isWide: boolean
+}
+
+export function SearchForm({ title, subtitle, isWide }: SearchFormProps) {
   const today = new Date()
 
   const {
@@ -69,63 +75,71 @@ export function SearchForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="w-full h-full space-y-4">
       <div className="w-full">
-        <h1 className="text-xl font-semibold text-zinc-950">Busque por Aqui</h1>
-        <p className="text-sm text-zinc-500">Preencha os campos abaixo</p>
+        <h1 className="text-xl font-semibold text-zinc-950">{title}</h1>
+        <p className="text-sm text-zinc-500">{subtitle}</p>
       </div>
 
-      <div className="flex space-x-4">
-        <fieldset className="space-y-0.5 flex-1">
-          <Label htmlFor="origem">Origem</Label>
-          <CityFill control={control} name="origem" />
-          {errors.origem && (
-            <p className="text-sm text-red-500">{errors.origem.message}</p>
-          )}
-        </fieldset>
-        <fieldset className="space-y-0.5 flex-1">
-          <Label htmlFor="destino">Destino</Label>
-          <CityFill control={control} name="destino" />
-          {errors.destino && (
-            <p className="text-sm text-red-500">{errors.destino.message}</p>
-          )}
-        </fieldset>
+      <div className={`${isWide ? 'flex flex-row gap-2' : ''}`}>
+        <div
+          className={`flex ${!isWide ? 'flex-row space-x-4' : 'flex-row w-1/2 gap-2'}`}
+        >
+          <fieldset className="space-y-0.5 flex-1">
+            <Label htmlFor="origem">Origem</Label>
+            <CityFill control={control} name="origem" />
+            {errors.origem && (
+              <p className="text-sm text-red-500">{errors.origem.message}</p>
+            )}
+          </fieldset>
+          <fieldset className="space-y-0.5 flex-1">
+            <Label htmlFor="destino">Destino</Label>
+            <CityFill control={control} name="destino" />
+            {errors.destino && (
+              <p className="text-sm text-red-500">{errors.destino.message}</p>
+            )}
+          </fieldset>
+        </div>
+
+        <div
+          className={`flex ${!isWide ? 'flex-row space-x-4 mt-4' : 'flex-row w-1/2 gap-2'}`}
+        >
+          <fieldset className="space-y-0.5 flex-1">
+            <Label htmlFor="startDate">De</Label>
+            <DatePicker
+              control={control}
+              name="startDate"
+              minDate={today.toISOString().substring(0, 10)}
+            />
+            {errors.startDate && (
+              <p className="text-sm text-red-500">{errors.startDate.message}</p>
+            )}
+          </fieldset>
+
+          <fieldset className="space-y-0.5 flex-1">
+            <Label htmlFor="endDate">Até</Label>
+            <DatePicker
+              control={control}
+              name="endDate"
+              minDate={watch('startDate')}
+            />
+            {errors.endDate && (
+              <p className="text-sm text-red-500">{errors.endDate.message}</p>
+            )}
+          </fieldset>
+        </div>
       </div>
 
-      <div className="flex space-x-4">
-        <fieldset className="space-y-0.5 flex-1">
-          <Label htmlFor="startDate">De</Label>
-          <DatePicker
-            control={control}
-            name="startDate"
-            minDate={today.toISOString().substring(0, 10)}
-          />
-          {errors.startDate && (
-            <p className="text-sm text-red-500">{errors.startDate.message}</p>
+      {!isWide && (
+        <Button type="submit" className="w-full" disabled={isSubmitting}>
+          {isSubmitting ? (
+            <>
+              <Loader2 className="size-4 mr-2 animate-spin" />
+              Confirmar Busca...
+            </>
+          ) : (
+            'Confirmar Busca'
           )}
-        </fieldset>
-
-        <fieldset className="space-y-0.5 flex-1">
-          <Label htmlFor="endDate">Até</Label>
-          <DatePicker
-            control={control}
-            name="endDate"
-            minDate={watch('startDate')}
-          />
-          {errors.endDate && (
-            <p className="text-sm text-red-500">{errors.endDate.message}</p>
-          )}
-        </fieldset>
-      </div>
-
-      <Button type="submit" className="w-full" disabled={isSubmitting}>
-        {isSubmitting ? (
-          <>
-            <Loader2 className="size-4 mr-2 animate-spin" />
-            Confirmar Busca...
-          </>
-        ) : (
-          'Confirmar Busca'
-        )}
-      </Button>
+        </Button>
+      )}
     </form>
   )
 }

@@ -4,8 +4,15 @@ import Link from 'next/link'
 
 export function Header() {
   return (
-    <header className="w-full h-18 px-32 py-6 flex items-center justify-between">
-      <Image src={'buscavan.svg'} width={140} height={20} alt="Buscavan Logo" />
+    <header className="w-full h-18 px-32 py-6 flex items-center justify-between border border-gray-300">
+      <Link href={'/'}>
+        <Image
+          src={'buscavan.svg'}
+          width={140}
+          height={20}
+          alt="Buscavan Logo"
+        />
+      </Link>
       <div className="w-fit h-full flex items-center justify-end gap-2">
         <Link href={'auth/login'}>
           <Button variant={'ghost'}>Entrar</Button>
