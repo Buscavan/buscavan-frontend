@@ -8,7 +8,10 @@ import {
   DrawerDescription,
 } from '@/components/ui/drawer'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import Link from 'next/link'
 import { GiHamburgerMenu } from 'react-icons/gi'
+import { HiOutlineComputerDesktop } from 'react-icons/hi2'
+import { BsHouse } from 'react-icons/bs'
 
 export function SideDrawer() {
   return (
@@ -22,51 +25,20 @@ export function SideDrawer() {
         <ScrollArea className="h-screen">
           <div className="mx-auto w-full p-5">
             <DrawerHeader>
-              <DrawerTitle>Título</DrawerTitle>
-              <DrawerDescription>
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                Distinctio, facilis quidem voluptatem, enim vel beatae
-                asperiores aspernatur mollitia error esse nulla culpa ea
-                inventore necessitatibus exercitationem libero dolor amet porro?
-              </DrawerDescription>
+              <DrawerTitle>Menu</DrawerTitle>
             </DrawerHeader>
-            <div className="p-4 pb-0 space-y-4">
-              <div className="bg-muted flex items-center justify-center rounded-lg h-32">
-                <p>Image 1</p>
-              </div>
-              <div className="bg-muted flex items-center justify-center rounded-lg h-32">
-                <p>Image 2</p>
-              </div>
-              <div className="bg-muted flex items-center justify-center rounded-lg h-32">
-                <p>Image 3</p>
-              </div>
-              <div className="bg-muted flex items-center justify-center rounded-lg h-32">
-                <p>Image 4</p>
-              </div>
-              <div className="bg-muted flex items-center justify-center rounded-lg h-32">
-                <p>Image 4</p>
-              </div>
-              <div className="bg-muted flex items-center justify-center rounded-lg h-32">
-                <p>Image 5</p>
-              </div>
-              <div className="bg-muted flex items-center justify-center rounded-lg h-32">
-                <p>Image 6</p>
-              </div>
-              <div className="bg-muted flex items-center justify-center rounded-lg h-32">
-                <p>Image 7</p>
-              </div>
-              <div className="bg-muted flex items-center justify-center rounded-lg h-32">
-                <p>Image 8</p>
-              </div>
-              <div className="bg-muted flex items-center justify-center rounded-lg h-32">
-                <p>Image 9</p>
-              </div>
-              <div className="bg-muted flex items-center justify-center rounded-lg h-32">
-                <p>Image 10</p>
-              </div>
-              <div className="bg-muted flex items-center justify-center rounded-lg h-32">
-                <p>Image 11</p>
-              </div>
+            <div className="p-4 pb-0 flex gap-4 flex-col">
+              <Link href={'/inicio'}>
+                <Button variant="outline" className="justify-start w-full px-2">
+                  <BsHouse className="mr-2 w-4 h-4" /> Página Inicial
+                </Button>
+              </Link>
+              <Link href={'/meu-painel'}>
+                <Button variant="outline" className="justify-start w-full px-2">
+                  <HiOutlineComputerDesktop className="mr-2 w-4 h-4" /> Meu
+                  Painel
+                </Button>
+              </Link>
             </div>
           </div>
         </ScrollArea>
