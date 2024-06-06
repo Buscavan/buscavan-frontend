@@ -40,7 +40,7 @@ export default function Inicio() {
               origem/destino
             </p>
           </div>
-          <div className="w-full min-h-fit h-full whitespace-nowrap flex flex-row pt-4 overflow-auto gap-3">
+          <div className="w-full min-h-fit h-full whitespace-nowrap flex flex-row py-4 overflow-auto gap-3 custom-scrollbar">
             {Array.from({ length: 16 }).map((_, index) => (
               <TripCard key={index} />
             ))}
