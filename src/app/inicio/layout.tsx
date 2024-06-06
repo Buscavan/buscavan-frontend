@@ -4,10 +4,10 @@ import { AdBanner } from '../components/ad-banner'
 
 export default function AppLayout({ children }: PropsWithChildren) {
   return (
-    <div>
+    <>
       <Header />
       {children}
       <AdBanner />
-    </div>
+    </>
   )
 }
