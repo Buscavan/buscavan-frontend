@@ -1,3 +1,5 @@
+import NotFound from './not-found'
+
 export default function Home() {
-  return <p>Em desenvolvimento</p>
+  return <NotFound />
 }
