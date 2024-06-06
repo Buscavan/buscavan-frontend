@@ -121,7 +121,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
         title: 'Registro efetuado com sucesso!',
         description: 'Sua conta foi criada com sucesso.',
       })
-      router.push('/dashboard')
+      router.push('/inicio')
     } catch (error) {
       toast({
         title: 'Falha no registro',
@@ -136,7 +136,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
     Cookies.remove('token')
     Cookies.remove('refreshToken')
     setUser(null)
-    router.push('/login')
+    router.push('/auth/login')
     toast({
       title: 'Logout realizado com sucesso!',
       description: 'Você foi desconectado.',
