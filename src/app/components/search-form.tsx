@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { useForm } from 'react-hook-form'
@@ -9,17 +10,18 @@ import { Loader2 } from 'lucide-react'
 import { useToast } from '@/components/ui/use-toast'
 import { CityFill } from './city-fill'
 import { DatePicker } from './date-picker'
+import { usePathname, useRouter } from 'next/navigation'
 
 const searchFormSchema = z.object({
   origem: z.string().min(1, 'Por favor, informe a cidade de origem'),
   destino: z.string().min(1, 'Por favor, informe a cidade de destino'),
-  startDate: z
+  dataInicio: z
     .date()
     .nullable()
     .refine((val) => val !== null, {
       message: 'Por favor, selecione a data de início',
     }),
-  endDate: z
+  dataFim: z
     .date()
     .nullable()
     .refine((val) => val !== null, {
@@ -43,23 +45,38 @@ interface SearchFormProps {
 
 export function SearchForm({ title, subtitle, isWide }: SearchFormProps) {
   const today = new Date()
+  const router = useRouter()
+  const pathname = usePathname()
 
   const {
     handleSubmit,
     watch,
     control,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<z.infer<typeof searchFormSchema>>({
     resolver: zodResolver(searchFormSchema),
     defaultValues: {
-      startDate: today,
-      endDate: getRandomFutureDate(10, 20),
+      dataInicio: today,
+      dataFim: getRandomFutureDate(10, 20),
       origem: '',
       destino: '',
     },
   })
 
   const { toast } = useToast()
+
+  useEffect(() => {
+    const storedData = localStorage.getItem('searchData')
+    if (storedData) {
+      const parsedData = JSON.parse(storedData)
+      setValue('origem', parsedData.origem)
+      setValue('destino', parsedData.destino)
+      setValue('dataInicio', new Date(parsedData.dataInicio))
+      setValue('dataFim', new Date(parsedData.dataFim))
+      localStorage.removeItem('searchData')
+    }
+  }, [setValue])
 
   async function onSubmit(data: z.infer<typeof searchFormSchema>) {
     await new Promise((resolve) => setTimeout(resolve, 1000))
@@ -70,6 +87,19 @@ export function SearchForm({ title, subtitle, isWide }: SearchFormProps) {
       title: 'Busca confirmada',
       description: 'Separamos os melhores resultados para sua busca',
     })
+
+    if (pathname !== '/pesquisa') {
+      localStorage.setItem(
+        'searchData',
+        JSON.stringify({
+          origem: data.origem,
+          destino: data.destino,
+          dataInicio: data.dataInicio.toISOString(),
+          dataFim: data.dataFim.toISOString(),
+        }),
+      )
+      router.push('/pesquisa')
+    }
   }
 
   return (
@@ -103,26 +133,28 @@ export function SearchForm({ title, subtitle, isWide }: SearchFormProps) {
           className={`flex ${!isWide ? 'flex-row space-x-4 mt-4' : 'flex-row w-1/2 gap-2'}`}
         >
           <fieldset className="space-y-0.5 flex-1">
-            <Label htmlFor="startDate">De</Label>
+            <Label htmlFor="dataInicio">De</Label>
             <DatePicker
               control={control}
-              name="startDate"
+              name="dataInicio"
               minDate={today.toISOString().substring(0, 10)}
             />
-            {errors.startDate && (
-              <p className="text-sm text-red-500">{errors.startDate.message}</p>
+            {errors.dataInicio && (
+              <p className="text-sm text-red-500">
+                {errors.dataInicio.message}
+              </p>
             )}
           </fieldset>
 
           <fieldset className="space-y-0.5 flex-1">
-            <Label htmlFor="endDate">Até</Label>
+            <Label htmlFor="dataFim">Até</Label>
             <DatePicker
               control={control}
-              name="endDate"
-              minDate={watch('startDate')}
+              name="dataFim"
+              minDate={watch('dataInicio')}
             />
-            {errors.endDate && (
-              <p className="text-sm text-red-500">{errors.endDate.message}</p>
+            {errors.dataFim && (
+              <p className="text-sm text-red-500">{errors.dataFim.message}</p>
             )}
           </fieldset>
         </div>
