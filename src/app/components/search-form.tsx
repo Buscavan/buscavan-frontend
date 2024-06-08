@@ -11,6 +11,7 @@ import { useToast } from '@/components/ui/use-toast'
 import { CityFill } from './city-fill'
 import { DatePicker } from './date-picker'
 import { usePathname, useRouter } from 'next/navigation'
+import ErrorLabel from './error-label'
 
 const searchFormSchema = z.object({
   origem: z.string().min(1, 'Por favor, informe a cidade de origem'),
@@ -116,15 +117,13 @@ export function SearchForm({ title, subtitle, isWide }: SearchFormProps) {
           <fieldset className="space-y-0.5 flex-1">
             <Label htmlFor="origem">Origem</Label>
             <CityFill control={control} name="origem" />
-            {errors.origem && (
-              <p className="text-sm text-red-500">{errors.origem.message}</p>
-            )}
+            {errors.origem && <ErrorLabel>{errors.origem.message}</ErrorLabel>}
           </fieldset>
           <fieldset className="space-y-0.5 flex-1">
             <Label htmlFor="destino">Destino</Label>
             <CityFill control={control} name="destino" />
             {errors.destino && (
-              <p className="text-sm text-red-500">{errors.destino.message}</p>
+              <ErrorLabel>{errors.destino.message}</ErrorLabel>
             )}
           </fieldset>
         </div>
@@ -140,9 +139,7 @@ export function SearchForm({ title, subtitle, isWide }: SearchFormProps) {
               minDate={today.toISOString().substring(0, 10)}
             />
             {errors.dataInicio && (
-              <p className="text-sm text-red-500">
-                {errors.dataInicio.message}
-              </p>
+              <ErrorLabel>{errors.dataInicio.message}</ErrorLabel>
             )}
           </fieldset>
 
@@ -154,7 +151,7 @@ export function SearchForm({ title, subtitle, isWide }: SearchFormProps) {
               minDate={watch('dataInicio')}
             />
             {errors.dataFim && (
-              <p className="text-sm text-red-500">{errors.dataFim.message}</p>
+              <ErrorLabel>{errors.dataFim.message}</ErrorLabel>
             )}
           </fieldset>
         </div>
