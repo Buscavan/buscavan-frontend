@@ -77,6 +77,8 @@ const config = {
           'linear-gradient(90deg, rgba(2,44,34,1), rgba(4,120,87,1))',
         auth: "linear-gradient(90deg, #00000025, #00000025), url('/auth.jpg')",
         banner: "url('/banner.png')",
+        unisagrado: "url('/unisagrado.png')",
+        coordenadoriaExtensao: "url('/unisagrado_coordenadoria_extensao.png')",
       },
     },
   },
