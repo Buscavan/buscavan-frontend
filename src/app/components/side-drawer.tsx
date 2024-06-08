@@ -5,6 +5,7 @@ import {
   DrawerContent,
   DrawerHeader,
   DrawerTitle,
+  DrawerFooter,
 } from '@/components/ui/drawer'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import Link from 'next/link'
@@ -20,9 +21,9 @@ export function SideDrawer() {
           <GiHamburgerMenu className="w-full h-full" />
         </Button>
       </DrawerTrigger>
-      <DrawerContent className="h-screen top-0 left-0 right-auto mt-0 w-[500px] rounded-none">
-        <ScrollArea className="h-screen">
-          <div className="mx-auto w-full p-5">
+      <DrawerContent className="top-0 left-0 right-auto mt-0 w-[300px] h-full rounded-none">
+        <ScrollArea className="h-full">
+          <div className="mx-auto w-full p-5 px-3">
             <DrawerHeader>
               <DrawerTitle>Menu</DrawerTitle>
             </DrawerHeader>
@@ -41,6 +42,9 @@ export function SideDrawer() {
             </div>
           </div>
         </ScrollArea>
+        <DrawerFooter className="flex items-center justify-center">
+          <p className="text-zinc-500 text-sm font-medium">@Buscavan</p>
+        </DrawerFooter>
       </DrawerContent>
     </Drawer>
   )
