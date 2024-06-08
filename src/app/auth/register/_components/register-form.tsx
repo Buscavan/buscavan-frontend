@@ -9,6 +9,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Eye, EyeOff, Loader2 } from 'lucide-react'
 import { toast } from '@/components/ui/use-toast'
+import ErrorLabel from '@/app/components/error-label'
 
 const registerFormSchema = z.object({
   name: z
@@ -51,9 +52,7 @@ export function RegisterForm() {
 
         <Input id="name" placeholder="Digite seu nome" {...register('name')} />
 
-        {errors.name && (
-          <p className="text-sm text-red-500">{errors.name.message}</p>
-        )}
+        {errors.name && <ErrorLabel>{errors.name.message}</ErrorLabel>}
       </fieldset>
 
       <fieldset className="space-y-0.5">
@@ -65,9 +64,7 @@ export function RegisterForm() {
           {...register('email')}
         />
 
-        {errors.email && (
-          <p className="text-sm text-red-500">{errors.email.message}</p>
-        )}
+        {errors.email && <ErrorLabel>{errors.email.message}</ErrorLabel>}
       </fieldset>
 
       <div className="flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0">
@@ -76,9 +73,7 @@ export function RegisterForm() {
 
           <Input id="cpf" placeholder="000.000.000-00" {...register('cpf')} />
 
-          {errors.cpf && (
-            <p className="text-sm text-red-500">{errors.cpf.message}</p>
-          )}
+          {errors.cpf && <ErrorLabel>{errors.cpf.message}</ErrorLabel>}
         </fieldset>
 
         <fieldset className="space-y-0.5">
@@ -108,7 +103,7 @@ export function RegisterForm() {
           </div>
 
           {errors.password && (
-            <p className="text-sm text-red-500">{errors.password.message}</p>
+            <ErrorLabel>{errors.password.message}</ErrorLabel>
           )}
         </fieldset>
 
@@ -122,7 +117,7 @@ export function RegisterForm() {
           />
 
           {errors.phone && (
-            <p className="text-sm text-red-500">{errors.phone.message}</p>
+            <ErrorLabel>{errors.phone.message}</ErrorLabel>
           )}
         </fieldset> */}
       </div>
@@ -137,7 +132,7 @@ export function RegisterForm() {
         />
 
         {errors.address && (
-          <p className="text-sm text-red-500">{errors.address.message}</p>
+          <ErrorLabel>{errors.address.message}</ErrorLabel>
         )}
       </fieldset> */}
 

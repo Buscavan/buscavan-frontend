@@ -9,6 +9,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Eye, EyeOff, Loader2 } from 'lucide-react'
 import { toast } from '@/components/ui/use-toast'
+import ErrorLabel from '@/app/components/error-label'
 
 const loginFormSchema = z.object({
   cpf: z.string({ required_error: 'Por favor, informe seu CPF' }),
@@ -51,9 +52,7 @@ export function LoginForm() {
           {...register('cpf')}
         />
 
-        {errors.cpf && (
-          <p className="text-sm text-red-500">{errors.cpf.message}</p>
-        )}
+        {errors.cpf && <ErrorLabel>{errors.cpf.message}</ErrorLabel>}
       </fieldset>
 
       <fieldset className="space-y-0.5">
@@ -78,9 +77,7 @@ export function LoginForm() {
           </Button>
         </div>
 
-        {errors.password && (
-          <p className="text-sm text-red-500">{errors.password.message}</p>
-        )}
+        {errors.password && <ErrorLabel>{errors.password.message}</ErrorLabel>}
       </fieldset>
 
       <Button type="submit" className="w-full" disabled={isSubmitting}>
