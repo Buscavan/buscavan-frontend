@@ -8,8 +8,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Eye, EyeOff, Loader2 } from 'lucide-react'
-import { toast } from '@/components/ui/use-toast'
-import ErrorLabel from '@/app/components/error-label'
+import { useAuth } from '@/hooks/useAuth'
 
 const registerFormSchema = z.object({
   name: z
@@ -25,6 +24,7 @@ const registerFormSchema = z.object({
 })
 
 export function RegisterForm() {
+  const { register: registerAuth } = useAuth()
   const [ocult, setOcult] = useState(false)
   const {
     register,
@@ -35,14 +35,7 @@ export function RegisterForm() {
   })
 
   async function onSubmit(data: z.infer<typeof registerFormSchema>) {
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-
-    console.log(data)
-
-    toast({
-      title: `Seja Bem-vindo, ${data.name.split(' ')[0]}!`,
-      description: 'Nós da Buscavan agradecemos a sua visita.',
-    })
+    await registerAuth(data)
   }
 
   return (
@@ -52,7 +45,9 @@ export function RegisterForm() {
 
         <Input id="name" placeholder="Digite seu nome" {...register('name')} />
 
-        {errors.name && <ErrorLabel>{errors.name.message}</ErrorLabel>}
+        {errors.name && (
+          <p className="text-sm text-red-500">{errors.name.message}</p>
+        )}
       </fieldset>
 
       <fieldset className="space-y-0.5">
@@ -64,7 +59,9 @@ export function RegisterForm() {
           {...register('email')}
         />
 
-        {errors.email && <ErrorLabel>{errors.email.message}</ErrorLabel>}
+        {errors.email && (
+          <p className="text-sm text-red-500">{errors.email.message}</p>
+        )}
       </fieldset>
 
       <div className="flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0">
@@ -73,7 +70,9 @@ export function RegisterForm() {
 
           <Input id="cpf" placeholder="000.000.000-00" {...register('cpf')} />
 
-          {errors.cpf && <ErrorLabel>{errors.cpf.message}</ErrorLabel>}
+          {errors.cpf && (
+            <p className="text-sm text-red-500">{errors.cpf.message}</p>
+          )}
         </fieldset>
 
         <fieldset className="space-y-0.5">
@@ -103,7 +102,7 @@ export function RegisterForm() {
           </div>
 
           {errors.password && (
-            <ErrorLabel>{errors.password.message}</ErrorLabel>
+            <p className="text-sm text-red-500">{errors.password.message}</p>
           )}
         </fieldset>
 
@@ -117,7 +116,7 @@ export function RegisterForm() {
           />
 
           {errors.phone && (
-            <ErrorLabel>{errors.phone.message}</ErrorLabel>
+            <p className="text-sm text-red-500">{errors.phone.message}</p>
           )}
         </fieldset> */}
       </div>
@@ -132,7 +131,7 @@ export function RegisterForm() {
         />
 
         {errors.address && (
-          <ErrorLabel>{errors.address.message}</ErrorLabel>
+          <p className="text-sm text-red-500">{errors.address.message}</p>
         )}
       </fieldset> */}
 

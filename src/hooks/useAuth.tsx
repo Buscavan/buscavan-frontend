@@ -14,6 +14,7 @@ import Cookies from 'js-cookie'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import { useToast } from '@/components/ui/use-toast'
+import { api } from '@/api/axios'
 
 interface User {
   email: string
@@ -22,16 +23,47 @@ interface User {
   id: number
 }
 
+interface RegisterResponse {
+  token: string
+  expiresIn: Date | number
+  id: number
+  name: string
+  email: string
+  cpf: string
+  password: string
+  updatedAt: string
+  createdAt: string
+}
+
+interface LoginResponse {
+  token: string
+  expiresIn: Date | number
+  user: {
+    id: number
+    name: string
+    email: string
+    cpf: string
+    password: string
+    updatedAt: string
+    createdAt: string
+  }
+}
+
+interface LoginFormInputs {
+  cpf: string
+  password: string
+}
+
 interface RegisterFormInputs {
   email: string
-  nome: string
+  name: string
   cpf: string
   password: string
 }
 
 interface AuthContextType {
   user: User | null
-  login: (email: string, password: string) => Promise<void>
+  login: (data: LoginFormInputs) => Promise<void>
   register: (data: RegisterFormInputs) => Promise<void>
   logout: () => void
   getToken: () => string | null
@@ -80,21 +112,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
     if (token) validateToken(token)
   }, [])
 
-  const login = async (email: string, password: string): Promise<void> => {
+  const login = async (data: LoginFormInputs): Promise<void> => {
     try {
-      const response = await axios.post<{
-        token: string
-        refresh_token: string
-        user: User
-      }>(`${process.env.API_ENDPOINT}/auth/login`, {
-        email,
-        senha: password,
-      })
-      const { token, refresh_token: refreshToken, user } = response.data
+      const response = await api.post<LoginResponse>('/auth/login', data)
+      const {
+        token,
+        user: { id, name, email, cpf },
+      } = response.data
 
       Cookies.set('token', token, { expires: 7 })
-      Cookies.set('refreshToken', refreshToken, { expires: 14 })
-      setUser(user)
+      // Cookies.set('refreshToken', refreshToken, { expires: 14 })
+
+      setUser({ id, name, email, cpf })
+
+      router.push('/inicio')
     } catch (error) {
       toast({
         title: 'Login falhou',
@@ -107,20 +138,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
 
   const register = async (data: RegisterFormInputs): Promise<void> => {
     try {
-      const response = await axios.post<{
-        token: string
-        refresh_token: string
-        user: User
-      }>(`${process.env.API_ENDPOINT}/consumidor/registro`, data)
-      const { token, refresh_token: refreshToken, user } = response.data
+      const response = await api.post<RegisterResponse>('/auth/register', data)
+      // console.log(response.data)
+      const { token, id, name, email, cpf } = response.data
 
       Cookies.set('token', token, { expires: 7 })
-      Cookies.set('refreshToken', refreshToken, { expires: 14 })
-      setUser(user)
+      // Cookies.set('refreshToken', refreshToken, { expires: 14 })
+
+      setUser({ id, name, email, cpf })
+
       toast({
         title: 'Registro efetuado com sucesso!',
         description: 'Sua conta foi criada com sucesso.',
       })
+
       router.push('/inicio')
     } catch (error) {
       toast({

@@ -8,8 +8,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Eye, EyeOff, Loader2 } from 'lucide-react'
-import { toast } from '@/components/ui/use-toast'
-import ErrorLabel from '@/app/components/error-label'
+import { useAuth } from '@/hooks/useAuth'
 
 const loginFormSchema = z.object({
   cpf: z.string({ required_error: 'Por favor, informe seu CPF' }),
@@ -19,6 +18,7 @@ const loginFormSchema = z.object({
 })
 
 export function LoginForm() {
+  const { login: loginAuth } = useAuth()
   const [ocult, setOcult] = useState(false)
   const {
     register,
@@ -29,14 +29,7 @@ export function LoginForm() {
   })
 
   async function onSubmit(data: z.infer<typeof loginFormSchema>) {
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-
-    console.log(data)
-
-    toast({
-      title: 'Seja Bem-vindo de Volta!',
-      description: 'Começe a agendar suas viajens o quanto antes.',
-    })
+    await loginAuth(data)
   }
 
   return (
@@ -52,7 +45,9 @@ export function LoginForm() {
           {...register('cpf')}
         />
 
-        {errors.cpf && <ErrorLabel>{errors.cpf.message}</ErrorLabel>}
+        {errors.cpf && (
+          <p className="text-sm text-red-500">{errors.cpf.message}</p>
+        )}
       </fieldset>
 
       <fieldset className="space-y-0.5">
@@ -77,7 +72,9 @@ export function LoginForm() {
           </Button>
         </div>
 
-        {errors.password && <ErrorLabel>{errors.password.message}</ErrorLabel>}
+        {errors.password && (
+          <p className="text-sm text-red-500">{errors.password.message}</p>
+        )}
       </fieldset>
 
       <Button type="submit" className="w-full" disabled={isSubmitting}>
