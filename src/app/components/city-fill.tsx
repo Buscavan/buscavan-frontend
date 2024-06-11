@@ -1,6 +1,7 @@
 'use client'
 
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
 import { Controller, Control, FieldValues, Path } from 'react-hook-form'
 import { Check, ChevronsUpDown } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -17,22 +18,28 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import { CommandList } from 'cmdk'
 
-const frameworks = [
-  {
-    value: 'LencoisPaulistaSP',
-    label: 'Lençóis Paulista, SP',
-  },
-  {
-    value: 'CamposdoJordaoSP',
-    label: 'Campos do Jordão, SP',
-  },
-  {
-    value: 'BauruSP',
-    label: 'Bauru, SP',
-  },
-]
+interface City {
+  nome: string
+  microrregiao: {
+    mesorregiao: {
+      UF: {
+        sigla: string
+      }
+    }
+  }
+}
+
+interface State {
+  id: number
+  sigla: string
+  nome: string
+  regiao: {
+    id: number
+    sigla: string
+    nome: string
+  }
+}
 
 interface CityFillProps<TFieldValues extends FieldValues = FieldValues> {
   control: Control<TFieldValues>
@@ -48,6 +55,47 @@ export function CityFill<TFieldValues extends FieldValues>({
   control,
   name,
 }: CityFillProps<TFieldValues>) {
+  const [cities, setCities] = useState<FillProps[]>([])
+  const [search, setSearch] = useState('')
+
+  useEffect(() => {
+    if (search.length >= 2) {
+      fetchCities(search)
+    } else {
+      setCities([])
+    }
+  }, [search])
+
+  const fetchCities = async (searchTerm: string) => {
+    try {
+      const statesResponse = await axios.get(
+        'https://brasilapi.com.br/api/ibge/uf/v1',
+      )
+      const states: State[] = statesResponse.data
+
+      const cityPromises = states.map(async (state: State) => {
+        const response = await axios.get(
+          `https://brasilapi.com.br/api/ibge/municipios/v1/${state.sigla}`,
+        )
+        const data: City[] = response.data
+        return data
+          .filter((city) =>
+            city.nome.toLowerCase().includes(searchTerm.toLowerCase()),
+          )
+          .map((city) => ({
+            value: `${city.nome}${city.microrregiao.mesorregiao.UF.sigla}`,
+            label: `${city.nome}, ${city.microrregiao.mesorregiao.UF.sigla}`,
+          }))
+      })
+
+      const citiesData = await Promise.all(cityPromises)
+      const flattenedCities = citiesData.flat()
+      setCities(flattenedCities)
+    } catch (error) {
+      console.error('Error fetching cities:', error)
+    }
+  }
+
   return (
     <Controller
       control={control}
@@ -61,43 +109,39 @@ export function CityFill<TFieldValues extends FieldValues>({
               className="w-full flex items-center justify-between"
             >
               {value
-                ? frameworks.find((framework) => framework.value === value)
-                    ?.label
+                ? cities.find((city) => city.value === value)?.label
                 : 'Selecione uma cidade...'}
               <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-[--radix-popover-trigger-width] max-h-[--radix-popover-content-available-height] p-0">
             <Command>
-              <CommandList>
-                <CommandInput placeholder="Selecione uma cidade..." />
-                <CommandEmpty>Nenhuma cidade foi encontrada.</CommandEmpty>
-                {frameworks.length && (
-                  <CommandGroup>
-                    {frameworks.map((framework: FillProps) => (
-                      <CommandItem
-                        key={framework.value}
-                        value={framework.value}
-                        onSelect={() => {
-                          onChange(
-                            framework.value === value ? '' : framework.value,
-                          )
-                        }}
-                      >
-                        <Check
-                          className={cn(
-                            'mr-2 h-4 w-4',
-                            value === framework.value
-                              ? 'opacity-100'
-                              : 'opacity-0',
-                          )}
-                        />
-                        {framework.label}
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
-                )}
-              </CommandList>
+              <CommandInput
+                placeholder="Selecione uma cidade..."
+                onValueChange={setSearch}
+              />
+              <CommandEmpty>Nenhuma cidade foi encontrada.</CommandEmpty>
+              {cities && cities.length > 0 && (
+                <CommandGroup>
+                  {cities.map((city: FillProps) => (
+                    <CommandItem
+                      key={city.value}
+                      value={city.value}
+                      onSelect={() => {
+                        onChange(city.value === value ? '' : city.value)
+                      }}
+                    >
+                      <Check
+                        className={cn(
+                          'mr-2 h-4 w-4',
+                          value === city.value ? 'opacity-100' : 'opacity-0',
+                        )}
+                      />
+                      {city.label}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              )}
             </Command>
           </PopoverContent>
         </Popover>
