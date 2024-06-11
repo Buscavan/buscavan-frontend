@@ -30,22 +30,11 @@ interface City {
   }
 }
 
-interface State {
-  id: number
-  sigla: string
-  nome: string
-  regiao: {
-    id: number
-    sigla: string
-    nome: string
-  }
-}
-
 interface CityFillProps<TFieldValues extends FieldValues = FieldValues> {
   control: Control<TFieldValues>
   name: Path<TFieldValues>
 }
-
+ 
 interface FillProps {
   value: string
   label: string
