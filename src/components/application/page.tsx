@@ -5,6 +5,7 @@ type ApplicationPageGenericProps<T = unknown> = {
   className?: string
   children: ReactNode
 } & T
+
 export function ApplicationPage({
   className,
   children,
