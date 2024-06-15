@@ -1,10 +1,8 @@
 import { Metadata } from 'next'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { Search } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { PopularDestinyCard } from '../components/popular-destiny-card'
 import Image from 'next/image'
+import { BannerSearchForm } from '../components/banner-search-form'
 
 export const metadata: Metadata = {
   title: 'Início',
@@ -25,20 +23,7 @@ export default function Inicio() {
             </p>
           </div>
 
-          {/* Componentizar */}
-          <form
-            action=""
-            className="w-full flex items-center justify-center gap-3"
-          >
-            <Input
-              placeholder="Para onde deseja ir?"
-              className="max-w-80 w-full bg-zinc-50"
-            />
-
-            <Button className="bg-zinc-700 hover:bg-zinc-700/90">
-              <Search className="size-4 mr-2" /> Pesquisar
-            </Button>
-          </form>
+          <BannerSearchForm />
         </div>
       </section>
 
