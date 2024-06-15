@@ -11,7 +11,9 @@ export function ApplicationPage({
   children,
 }: ApplicationPageGenericProps) {
   return (
-    <main className={cn('mt-16 p-10 space-y-5', className)}>{children}</main>
+    <main className={cn('mt-16 p-10 flex flex-col gap-10', className)}>
+      {children}
+    </main>
   )
 }
 
@@ -40,6 +42,10 @@ export function ApplicationPageContent({
   children,
 }: ApplicationPageGenericProps) {
   return (
-    <main className={cn('flex flex-col gap-3', className)}>{children}</main>
+    <main
+      className={cn('max-w-7xl w-full mx-auto flex flex-col gap-3', className)}
+    >
+      {children}
+    </main>
   )
 }
