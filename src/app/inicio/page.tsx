@@ -3,6 +3,8 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Search } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
+import { PopularDestinyCard } from '../components/popular-destiny-card'
+import Image from 'next/image'
 
 export const metadata: Metadata = {
   title: 'Início',
@@ -41,7 +43,13 @@ export default function Inicio() {
       </section>
 
       <section className="max-w-7xl w-full mx-auto py-[5rem] flex justify-center items-center gap-8">
-        <div className="w-1/2 h-64 bg-zinc-300 rounded-xl" />
+        <Image
+          src="https://img.freepik.com/fotos-gratis/streaming-de-blogueira-feminina-viaja-online-com-smartphone_23-2148771580.jpg?t=st=1718474143~exp=1718477743~hmac=1acb99be65bd6fd3069d089bae75f400318302e0a5f9640c494dab4cbdb68bd0&w=1380"
+          width={1920}
+          height={1080}
+          alt="Agência"
+          className="w-1/2 h-80 rounded-xl object-cover object-center"
+        />
 
         <div className="w-1/2 space-y-4">
           <Badge>Quem somos?</Badge>
@@ -69,18 +77,12 @@ export default function Inicio() {
 
           <div className="w-full grid grid-cols-4 gap-4">
             {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="flex flex-col rounded-lg overflow-hidden">
-                <div className="h-40 bg-zinc-100" />
-                <div className="p-4 bg-background">
-                  <h5 className="font-semibold">Nome da Cidade</h5>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    Descrição
-                  </p>
-                  <Button size="sm" className="mt-4">
-                    Reservar agora
-                  </Button>
-                </div>
-              </div>
+              <PopularDestinyCard
+                key={i}
+                url="https://img.freepik.com/fotos-gratis/bondinho-do-pao-de-acucar-durante-o-por-do-sol_181624-36743.jpg?t=st=1718473679~exp=1718477279~hmac=906355afde64b5362f26bcc9ae5c685fac53ab205f583a7bbbde85eeb5f9a48c&w=740"
+                cityName="Balneário Camboriú"
+                description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+              />
             ))}
           </div>
         </div>
