@@ -4,7 +4,7 @@ import { Separator } from '@/components/ui/separator'
 import Link from 'next/link'
 
 export const metadata = {
-  title: 'Buscavan - Registro',
+  title: 'Registro',
 }
 
 export default function RegisterPage() {
