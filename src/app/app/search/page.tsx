@@ -4,6 +4,7 @@ import {
   ApplicationPageHeader,
   ApplicationPageHeaderTitle,
 } from '@/components/application/page'
+import { SearchForm } from './_components/search-form'
 
 export default function Search() {
   return (
@@ -15,8 +16,7 @@ export default function Search() {
       </ApplicationPageHeader>
 
       <ApplicationPageContent>
-        <h1>teste</h1>
-        <h1>teste</h1>
+        <SearchForm />
       </ApplicationPageContent>
     </ApplicationPage>
   )
