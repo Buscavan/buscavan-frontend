@@ -1,3 +1,4 @@
+import { Metadata } from 'next'
 import {
   ApplicationPage,
   ApplicationPageContent,
@@ -5,6 +6,10 @@ import {
   ApplicationPageHeaderTitle,
 } from '@/components/application/page'
 import { SearchForm } from './_components/search-form'
+
+export const metadata: Metadata = {
+  title: 'Viagens',
+}
 
 export default function Search() {
   return (

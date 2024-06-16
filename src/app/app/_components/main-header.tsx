@@ -1,7 +1,7 @@
 'use client'
 
-import { Dropdown } from '@/app/components/dropdown'
-import { SideDrawer } from '@/app/components/side-drawer'
+import { Dropdown } from './dropdown'
+import { SideDrawer } from '../_components/side-drawer'
 import {
   Header,
   HeaderContent,

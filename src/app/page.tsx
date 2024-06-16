@@ -1,9 +1,9 @@
 import { Badge } from '@/components/ui/badge'
-import { PopularDestinyCard } from './components/popular-destiny-card'
+import { PopularDestinyCard } from './_components/popular-destiny-card'
 import Image from 'next/image'
-import { BannerSearchForm } from './components/banner-search-form'
+import { BannerSearchForm } from './_components/banner-search-form'
 import { InitialHeader } from './_components/initial-header'
-import { AdBanner } from './components/ad-banner'
+import { AdBanner } from './_components/ad-banner'
 
 export default function Home() {
   return (

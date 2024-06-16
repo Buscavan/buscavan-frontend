@@ -1,12 +1,11 @@
 import { Metadata } from 'next'
-import Section from '../components/section'
-import Credits from '../components/credits'
+import Credits from './_components/credits'
 
 export const metadata: Metadata = {
   title: 'Sobre',
 }
 
-export default function Inicio() {
+export default function About() {
   return (
     <>
       <article className="w-full h-fit px-32 pb-0 py-16">

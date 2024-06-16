@@ -9,9 +9,9 @@ import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/use-toast'
-import ErrorLabel from '@/app/components/error-label'
 import { useState } from 'react'
-import { VehicleSelector } from '@/app/components/vehicle-selector'
+import { VehicleSelector } from './vehicle-selector'
+import ErrorLabel from '../../_components/error-label'
 
 const formSchema = z.object({
   placa: z
@@ -45,7 +45,7 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>
 
-export default function ConfiguracoesForm() {
+export default function FormSettings() {
   const {
     register,
     handleSubmit,
