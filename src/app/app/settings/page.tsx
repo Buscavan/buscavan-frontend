@@ -1,10 +1,9 @@
-import { Metadata } from 'next'
-import FormSettings from './_components/form-settings'
-
-export const metadata: Metadata = {
-  title: 'Configurações',
-}
+import { ProfileForm } from './_components/profile-form'
 
 export default function Settings() {
-  return <FormSettings />
+  return (
+    <div className="flex flex-col gap-4">
+      <ProfileForm />
+    </div>
+  )
 }
