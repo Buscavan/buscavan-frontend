@@ -16,6 +16,8 @@ export function middleware(request: NextRequest) {
   if (pathname === '/pesquisa' && !token) {
     return NextResponse.redirect(new URL(getUrl('/auth/login')))
   }
+
+  return NextResponse.next()
 }
 
 export const config = {

@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/use-toast'
 import { useState } from 'react'
 import { VehicleSelector } from './vehicle-selector'
-import ErrorLabel from '../../_components/error-label'
+import ErrorLabel from '@/components/application/error-label'
 
 const formSchema = z.object({
   placa: z
