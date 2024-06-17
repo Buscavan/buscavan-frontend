@@ -35,7 +35,7 @@ export function BannerSearchForm() {
     >
       <Input
         placeholder="Para onde deseja ir?"
-        className="max-w-80 w-full bg-zinc-50"
+        className="max-w-80 w-full bg-zinc-50 dark:text-zinc-800"
         {...register('destination')}
       />
 
