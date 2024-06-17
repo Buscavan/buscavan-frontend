@@ -1,4 +1,3 @@
-import ErrorLabel from '@/app/app/_components/error-label'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useState, ChangeEvent, useEffect } from 'react'
@@ -11,6 +10,7 @@ import {
   Path,
   PathValue,
 } from 'react-hook-form'
+import ErrorLabel from './error-label'
 
 function formatCPF(value: string): string {
   return value

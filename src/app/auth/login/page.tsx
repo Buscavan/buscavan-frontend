@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button'
 import { LoginForm } from './_components/login-form'
 import { Separator } from '@/components/ui/separator'
 import Link from 'next/link'
+import { TermsAndPrivacy } from '@/components/application/terms-and-privacy'
 
 export const metadata = {
   title: 'Login',
@@ -34,10 +35,7 @@ export default function LoginPage() {
           <Link href="/auth/register">Cadastre-se em nossa plataforma</Link>
         </Button>
 
-        <p className="text-xs sm:text-sm text-muted-foreground text-center">
-          Ao continuar, você concorda com os Termos de Serviço e Políticas de
-          Privacidade
-        </p>
+        <TermsAndPrivacy />
       </div>
     </section>
   )

@@ -13,7 +13,7 @@ import {
   RegisterFormSchema,
 } from '@/schemas/register-form-schema'
 import { CPFInput } from '@/components/application/cpf-input'
-import ErrorLabel from '@/app/app/_components/error-label'
+import ErrorLabel from '@/components/application/error-label'
 
 export function RegisterForm() {
   const { register: registerAuth } = useAuth()
@@ -26,6 +26,7 @@ export function RegisterForm() {
     getValues,
   } = useForm<RegisterFormSchema>({
     resolver: zodResolver(registerFormSchema),
+    mode: 'onChange',
   })
 
   const onSubmit = async (data: RegisterFormSchema) => {

@@ -11,7 +11,7 @@ import { Eye, EyeOff, Loader2 } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
 import { loginFormSchema } from '@/schemas/login-form-schema'
 import { CPFInput } from '@/components/application/cpf-input'
-import ErrorLabel from '@/app/app/_components/error-label'
+import ErrorLabel from '@/components/application/error-label'
 
 export function LoginForm() {
   const { login: loginAuth } = useAuth()
