@@ -4,7 +4,7 @@ import {
   Header,
   HeaderContent,
   HeaderContentActions,
-  HeaderContentLogo,
+  HeaderContentNav,
 } from '@/components/application/header'
 import { Logo } from '@/components/application/logo'
 import { Button } from '@/components/ui/button'
@@ -14,9 +14,9 @@ export function InitialHeader() {
   return (
     <Header>
       <HeaderContent>
-        <HeaderContentLogo>
+        <HeaderContentNav>
           <Logo path="/" />
-        </HeaderContentLogo>
+        </HeaderContentNav>
 
         <HeaderContentActions>
           <Button variant="ghost" asChild>
