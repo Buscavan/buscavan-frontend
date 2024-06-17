@@ -6,26 +6,18 @@ import {
   ApplicationPageHeaderTitle,
 } from '@/components/application/page'
 import { SearchForm } from './_components/search-form'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { VehicleCard } from './_components/vehicle-card'
 
 export const metadata: Metadata = {
-  title: 'Viagens',
+  title: 'Explorar',
 }
 
 export default function Search() {
   return (
     <ApplicationPage>
       <ApplicationPageHeader>
-        <ApplicationPageHeaderTitle>
-          Pesquise sua viagem!
-        </ApplicationPageHeaderTitle>
+        <ApplicationPageHeaderTitle>Explorar</ApplicationPageHeaderTitle>
       </ApplicationPageHeader>
 
       <ApplicationPageContent>
@@ -34,9 +26,6 @@ export default function Search() {
         <Card>
           <CardHeader>
             <CardTitle>Resultados</CardTitle>
-            <CardDescription>
-              Veículos disponíveis para sua viagem.
-            </CardDescription>
           </CardHeader>
 
           <CardContent className="grid grid-cols-4 gap-4">
