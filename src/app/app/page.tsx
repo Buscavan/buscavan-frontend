@@ -4,6 +4,11 @@ import {
   ApplicationPageHeader,
   ApplicationPageHeaderTitle,
 } from '@/components/application/page'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Viagens',
+}
 
 export default function Travels() {
   return (
@@ -12,7 +17,9 @@ export default function Travels() {
         <ApplicationPageHeaderTitle>Viagens</ApplicationPageHeaderTitle>
       </ApplicationPageHeader>
 
-      <ApplicationPageContent>asd</ApplicationPageContent>
+      <ApplicationPageContent>
+        Meus commits foram comidos, só pra atualizar
+      </ApplicationPageContent>
     </ApplicationPage>
   )
 }
