@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 import { cn } from '@/lib/utils'
+import Link from 'next/link'
 
 type HeaderGenericProps<T = unknown> = {
   className?: string
@@ -32,11 +33,36 @@ export function HeaderContent({ className, children }: HeaderGenericProps) {
   )
 }
 
-export function HeaderContentLogo({ className, children }: HeaderGenericProps) {
+export function HeaderContentNav({ className, children }: HeaderGenericProps) {
   return (
-    <div className={cn('flex-1 flex items-center gap-3', className)}>
+    <div className={cn('flex-1 flex items-center gap-8', className)}>
       {children}
     </div>
+  )
+}
+
+interface HeaderContentNavLinkProps {
+  path: string
+  active?: boolean
+}
+
+export function HeaderContentNavLink({
+  path,
+  active,
+  className,
+  children,
+}: HeaderGenericProps<HeaderContentNavLinkProps>) {
+  return (
+    <Link
+      href={path}
+      className={cn(
+        'flex items-center text-sm text-muted-foreground',
+        active && 'text-primary',
+        className,
+      )}
+    >
+      {children}
+    </Link>
   )
 }
 
