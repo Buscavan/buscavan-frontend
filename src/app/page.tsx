@@ -49,7 +49,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="w-full py-[5rem] flex items-center bg-zinc-200">
+        <section className="w-full py-[5rem] flex items-center bg-zinc-200 dark:bg-zinc-800">
           <div className="max-w-7xl w-full mx-auto flex flex-col items-center gap-12">
             <div className="flex flex-col items-center gap-4">
               <Badge>Destinos populares</Badge>
