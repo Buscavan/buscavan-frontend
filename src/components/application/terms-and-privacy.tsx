@@ -25,7 +25,7 @@ function TermsOfServiceModal() {
       <DialogTrigger asChild>
         <Button
           variant="link"
-          className="text-xs sm:text-sm text-zinc-600 underline p-0 h-6"
+          className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-300 underline p-0 h-6"
         >
           Termos de Serviço
         </Button>
@@ -87,7 +87,7 @@ function PrivacyPolicyModal() {
       <DialogTrigger asChild>
         <Button
           variant="link"
-          className="text-xs sm:text-sm text-zinc-600 underline p-0 h-6"
+          className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-300 underline p-0 h-6"
         >
           Políticas de Privacidade
         </Button>
