@@ -42,7 +42,7 @@ export function BannerSearchForm() {
       <Button
         type="submit"
         disabled={isSubmitting}
-        className="bg-zinc-700 hover:bg-zinc-700/90"
+        className="bg-zinc-700 hover:bg-zinc-700/90 dark:text-white"
       >
         {isSubmitting ? (
           <Loader2 className="size-4 mr-2 animate-spin'" />
