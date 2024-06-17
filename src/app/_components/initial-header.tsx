@@ -7,6 +7,7 @@ import {
   HeaderContentNav,
 } from '@/components/application/header'
 import { Logo } from '@/components/application/logo'
+import { ModeToggle } from '@/components/application/mode-toggle'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 
@@ -19,6 +20,8 @@ export function InitialHeader() {
         </HeaderContentNav>
 
         <HeaderContentActions>
+          <ModeToggle />
+
           <Button variant="ghost" asChild>
             <Link href="/auth/login">Faça login</Link>
           </Button>

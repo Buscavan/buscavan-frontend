@@ -1,27 +1,55 @@
 'use client'
 
-import { Dropdown } from './dropdown'
-import { SideDrawer } from '../_components/side-drawer'
 import {
   Header,
   HeaderContent,
+  HeaderContentNav,
+  HeaderContentNavLink,
   HeaderContentActions,
-  HeaderContentLogo,
 } from '@/components/application/header'
 import { Logo } from '@/components/application/logo'
+import { ModeToggle } from '@/components/application/mode-toggle'
+import { Separator } from '@/components/ui/separator'
+import { MapPinned, Search, User } from 'lucide-react'
+import { usePathname } from 'next/navigation'
 
 export function MainHeader() {
+  const pathname = usePathname()
+
+  function isActive(path: string) {
+    return pathname === path
+  }
+
   return (
     <Header>
       <HeaderContent>
-        <HeaderContentLogo>
-          <SideDrawer />
-
+        <HeaderContentNav>
           <Logo path="/search" />
-        </HeaderContentLogo>
+
+          <Separator orientation="vertical" className="h-3.5" />
+
+          <HeaderContentNavLink path="/app" active={isActive('/app')}>
+            <MapPinned className="size-4 mr-2" />
+            Viagens
+          </HeaderContentNavLink>
+          <HeaderContentNavLink
+            path="/app/search"
+            active={isActive('/app/search')}
+          >
+            <Search className="size-4 mr-2" />
+            Explorar
+          </HeaderContentNavLink>
+          <HeaderContentNavLink
+            path="/app/settings"
+            active={isActive('/app/settings')}
+          >
+            <User className="size-4 mr-2" />
+            Perfil
+          </HeaderContentNavLink>
+        </HeaderContentNav>
 
         <HeaderContentActions>
-          <Dropdown />
+          <ModeToggle />
         </HeaderContentActions>
       </HeaderContent>
     </Header>
