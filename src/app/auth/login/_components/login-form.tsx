@@ -9,13 +9,9 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Eye, EyeOff, Loader2 } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
-
-const loginFormSchema = z.object({
-  cpf: z.string({ required_error: 'Por favor, informe seu CPF' }),
-  password: z
-    .string({ required_error: 'Por favor, informe sua senha' })
-    .min(6, 'A senha deve ter pelo menos 6 caracteres'),
-})
+import { loginFormSchema } from '@/schemas/login-form-schema'
+import { CPFInput } from '@/components/application/cpf-input'
+import ErrorLabel from '@/app/app/_components/error-label'
 
 export function LoginForm() {
   const { login: loginAuth } = useAuth()
@@ -24,6 +20,8 @@ export function LoginForm() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
+    setValue,
+    getValues,
   } = useForm<z.infer<typeof loginFormSchema>>({
     resolver: zodResolver(loginFormSchema),
   })
@@ -35,19 +33,13 @@ export function LoginForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="w-full space-y-4">
       <fieldset className="space-y-0.5">
-        <Label htmlFor="cpf">CPF</Label>
-
-        <Input
-          id="cpf"
-          type="number"
-          placeholder="000.000.000-00"
-          className="remove-arrow"
-          {...register('cpf')}
+        <CPFInput
+          name="cpf"
+          register={register}
+          errors={errors}
+          setValue={setValue}
+          getValues={getValues}
         />
-
-        {errors.cpf && (
-          <p className="text-sm text-red-500">{errors.cpf.message}</p>
-        )}
       </fieldset>
 
       <fieldset className="space-y-0.5">
@@ -72,9 +64,7 @@ export function LoginForm() {
           </Button>
         </div>
 
-        {errors.password && (
-          <p className="text-sm text-red-500">{errors.password.message}</p>
-        )}
+        {errors.password && <ErrorLabel>{errors.password.message}</ErrorLabel>}
       </fieldset>
 
       <Button type="submit" className="w-full" disabled={isSubmitting}>

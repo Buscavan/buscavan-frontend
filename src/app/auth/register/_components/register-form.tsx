@@ -3,88 +3,17 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { useState, ChangeEvent, useEffect } from 'react'
-import {
-  useForm,
-  FieldErrors,
-  UseFormRegister,
-  UseFormSetValue,
-  UseFormGetValues,
-} from 'react-hook-form'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
 import { Eye, EyeOff, Loader2 } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
-
-const registerFormSchema = z.object({
-  name: z
-    .string({ required_error: 'Por favor, informe seu nome' })
-    .min(3, 'Mínimo 3 caracteres'),
-  cpf: z
-    .string({ required_error: 'Por favor, informe seu CPF' })
-    .min(14, 'CPF inválido'),
-  email: z
-    .string({ required_error: 'Por favor, informe seu e-mail' })
-    .email('Por favor, informe um e-mail válido'),
-  password: z
-    .string({ required_error: 'Por favor, informe sua senha' })
-    .min(6, 'A senha deve ter pelo menos 6 caracteres'),
-})
-
-type RegisterFormSchema = z.infer<typeof registerFormSchema>
-
-function formatCPF(value: string): string {
-  return value
-    .replace(/\D/g, '')
-    .slice(0, 11)
-    .replace(/(\d{3})(\d)/, '$1.$2')
-    .replace(/(\d{3})(\d)/, '$1.$2')
-    .replace(/(\d{3})(\d{1,2})$/, '$1-$2')
-}
-
-interface CPFInputProps {
-  register: UseFormRegister<RegisterFormSchema>
-  name: keyof RegisterFormSchema
-  errors: FieldErrors<RegisterFormSchema>
-  setValue: UseFormSetValue<RegisterFormSchema>
-  getValues: UseFormGetValues<RegisterFormSchema>
-}
-
-function CPFInput({
-  register,
-  name,
-  errors,
-  setValue,
-  getValues,
-}: CPFInputProps) {
-  const [value, setValueState] = useState<string>('')
-
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const formattedValue = formatCPF(event.target.value)
-    setValueState(formattedValue)
-    setValue(name, formattedValue, { shouldValidate: true }) // Trigger validation
-  }
-
-  useEffect(() => {
-    setValueState(getValues(name) || '')
-  }, [getValues, name])
-
-  return (
-    <div>
-      <Label htmlFor={name}>CPF</Label>
-      <Input
-        id={name}
-        placeholder="000.000.000-00"
-        value={value}
-        {...register(name)}
-        onChange={handleChange}
-      />
-      {errors[name] && (
-        <p className="text-sm text-red-500">{errors[name]?.message}</p>
-      )}
-    </div>
-  )
-}
+import {
+  registerFormSchema,
+  RegisterFormSchema,
+} from '@/schemas/register-form-schema'
+import { CPFInput } from '@/components/application/cpf-input'
+import ErrorLabel from '@/app/app/_components/error-label'
 
 export function RegisterForm() {
   const { register: registerAuth } = useAuth()
@@ -108,9 +37,7 @@ export function RegisterForm() {
       <fieldset className="space-y-0.5">
         <Label htmlFor="name">Nome</Label>
         <Input id="name" placeholder="Digite seu nome" {...register('name')} />
-        {errors.name && (
-          <p className="text-sm text-red-500">{errors.name?.message}</p>
-        )}
+        {errors.name && <ErrorLabel>{errors.name?.message}</ErrorLabel>}
       </fieldset>
 
       <fieldset className="space-y-0.5">
@@ -120,9 +47,7 @@ export function RegisterForm() {
           placeholder="nome@exemplo.com"
           {...register('email')}
         />
-        {errors.email && (
-          <p className="text-sm text-red-500">{errors.email?.message}</p>
-        )}
+        {errors.email && <ErrorLabel>{errors.email?.message}</ErrorLabel>}
       </fieldset>
 
       <div className="flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0">
@@ -161,7 +86,7 @@ export function RegisterForm() {
             </Button>
           </div>
           {errors.password && (
-            <p className="text-sm text-red-500">{errors.password?.message}</p>
+            <ErrorLabel>{errors.password?.message}</ErrorLabel>
           )}
         </fieldset>
       </div>
