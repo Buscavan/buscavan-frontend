@@ -38,13 +38,11 @@ export default function Home() {
 
           <div className="w-1/2 space-y-4">
             <Badge>Quem somos?</Badge>
-            <h1 className="font-bold text-3xl">
-              Agência de viagens de confiança
-            </h1>
+            <h1 className="font-bold text-3xl">Plataforma de Conexão</h1>
             <p className="text-muted-foreground">
-              Somos uma equipe apaixonada por viagens que se dedica a oferecer a
-              melhor experiência para nossos clientes. Nosso objetivo é tornar a
-              reserva de férias um processo fácil e prazeroso.
+              Somos uma equipe apaixonada por conectar pessoas nos dedicando a
+              oferecer a melhor experiência para motoristas e viajantes. Nosso
+              objetivo é tornar a reserva de viagens um processo rápido e fácil.
             </p>
           </div>
         </section>
