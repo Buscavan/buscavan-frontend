@@ -8,7 +8,7 @@ interface AvatarHolderProps {
 const AvatarHolder: React.FC<AvatarHolderProps> = ({ label, children }) => {
   return (
     <div className="grid flex-1 gap-2">
-      <Label className="font-semibold">{label}</Label>
+      <Label className="font-semibold dark:text-zinc-300">{label}</Label>
       {children}
     </div>
   )

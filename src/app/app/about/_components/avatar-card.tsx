@@ -13,7 +13,7 @@ const AvatarCard: React.FC<AvatarCardProps> = ({ name, fallback, src }) => {
         <AvatarImage src={src} />
         <AvatarFallback>{fallback}</AvatarFallback>
       </Avatar>
-      <p className="text-sm text-zinc-700">{name}</p>
+      <p className="text-sm text-zinc-700 dark:text-zinc-300">{name}</p>
     </div>
   )
 }

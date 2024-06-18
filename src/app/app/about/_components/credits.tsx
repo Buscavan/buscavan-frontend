@@ -82,18 +82,18 @@ export default function Credits() {
         <div className="flex items-center space-x-2 pt-4">
           <div className="grid grid-cols-2 items-center min-h-12 w-full">
             <p className="w-full h-fit text-xs">Desenvolvimento:</p>
-            <div className="w-full h-full bg-coordenadoriaExtensao bg-fit bg-left bg-no-repeat"></div>
+            <div className="w-full h-full bg-coordenadoriaExtensao bg-fit bg-center bg-no-repeat bg-white rounded-md"></div>
           </div>
         </div>
         <div className="flex items-center space-x-2 pt-4">
           <div className="grid grid-cols-2 items-center min-h-12 w-full">
             <div className="w-full h-fit flex flex-start flex-col items-center">
               <p className="w-full text-xs">Apoio:</p>
-              <p className="w-full text-xs text-zinc-700">
+              <p className="w-full text-xs text-zinc-700 dark:text-zinc-300">
                 José Augusto Magalhães – Coordenador de Extensão
               </p>
             </div>
-            <div className="w-full h-full bg-unisagrado bg-fit bg-left bg-no-repeat"></div>
+            <div className="w-1/2 h-full bg-unisagrado bg-fit bg-center bg-no-repeat bg-white rounded-md"></div>
           </div>
         </div>
         <DialogFooter className="sm:justify-start"></DialogFooter>
