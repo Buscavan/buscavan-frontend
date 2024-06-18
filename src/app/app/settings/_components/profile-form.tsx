@@ -1,6 +1,8 @@
 'use client'
 
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
+import { FaPencilAlt } from 'react-icons/fa'
 import {
   Card,
   CardContent,
@@ -40,8 +42,8 @@ type ProfileFormSchema = z.infer<typeof profileFormSchema>
 
 export function ProfileForm() {
   const { user, setUser } = useAuth()
-
   const { toast } = useToast()
+  const [isEditing, setIsEditing] = useState(false)
 
   const {
     register,
@@ -66,7 +68,9 @@ export function ProfileForm() {
         name: data.name,
         email: data.email,
         cpf: data.cpf,
+        phone: data.phone,
       })
+      setIsEditing(false)
 
       toast({
         title: 'Perfil atualizado!',
@@ -99,7 +103,7 @@ export function ProfileForm() {
                 Alterar Imagem
               </Button>
             </div>
-            <div>
+            <div className="flex-1 space-y-3">
               <div className="grid grid-cols-[1fr_10rem] gap-3">
                 <fieldset className="space-y-0.5">
                   <Label htmlFor="name">Nome</Label>
@@ -107,6 +111,7 @@ export function ProfileForm() {
                     id="name"
                     placeholder="Digite seu nome"
                     {...register('name')}
+                    disabled={!isEditing}
                   />
                   {errors.name && (
                     <ErrorLabel>{errors.name?.message}</ErrorLabel>
@@ -119,6 +124,7 @@ export function ProfileForm() {
                     errors={errors}
                     setValue={setValue}
                     getValues={getValues}
+                    disabled={!isEditing}
                   />
                 </fieldset>
               </div>
@@ -130,6 +136,7 @@ export function ProfileForm() {
                     id="email"
                     placeholder="Digite seu e-mail"
                     {...register('email')}
+                    disabled={!isEditing}
                   />
                   {errors.email && (
                     <ErrorLabel>{errors.email?.message}</ErrorLabel>
@@ -143,6 +150,7 @@ export function ProfileForm() {
                     errors={errors}
                     setValue={setValue}
                     getValues={getValues}
+                    disabled={!isEditing}
                   />
                 </fieldset>
               </div>
@@ -150,9 +158,20 @@ export function ProfileForm() {
           </div>
         </CardContent>
         <CardFooter className="justify-end">
-          <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? 'Salvando...' : 'Salvar alterações'}
-          </Button>
+          {isEditing ? (
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? 'Salvando...' : 'Salvar alterações'}
+            </Button>
+          ) : (
+            <Button
+              type="button"
+              onClick={() => setIsEditing(true)}
+              disabled={isSubmitting}
+            >
+              <FaPencilAlt className="mr-2" />
+              Editar perfil
+            </Button>
+          )}
         </CardFooter>
       </form>
     </Card>

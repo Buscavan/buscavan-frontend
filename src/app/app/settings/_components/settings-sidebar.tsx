@@ -14,7 +14,7 @@ export function SettingsSidebar() {
     <aside>
       <nav className="flex flex-col">
         <NavLink href="/app/settings" active={isActive('/app/settings')}>
-          Meu perfil
+          Perfil
         </NavLink>
         <NavLink
           href="/app/settings/driver"

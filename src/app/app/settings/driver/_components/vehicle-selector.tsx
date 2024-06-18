@@ -18,6 +18,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
+import { Label } from '@/components/ui/label'
 
 interface Brand {
   codigo: string
@@ -93,208 +94,227 @@ export function VehicleSelector() {
   }, [selectedModelId, selectedBrand, vehicleType])
 
   return (
-    <div className="space-y-4 space-x-3">
-      <Popover open={typeOpen} onOpenChange={setTypeOpen}>
-        <PopoverTrigger asChild className="flex-1">
-          <Button
-            variant="outline"
-            role="combobox"
-            aria-expanded={typeOpen}
-            className="min-w-[200px] flex-1 justify-between"
-          >
-            {vehicleTypes.find((type) => type.value === vehicleType)?.label}
-            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="min-w-[200px] flex-1 p-0">
-          <Command>
-            <CommandInput placeholder="Buscar tipo de veículo..." />
-            <CommandList>
-              <CommandEmpty>Nenhum tipo encontrado.</CommandEmpty>
-              <CommandGroup>
-                {vehicleTypes.map((type) => (
-                  <CommandItem
-                    key={type.value}
-                    value={type.value}
-                    onSelect={(currentValue) => {
-                      setVehicleType(currentValue)
-                      setSelectedBrand('')
-                      setSelectedModel('')
-                      setSelectedModelId('')
-                      setSelectedYear('')
-                      setTypeOpen(false)
-                    }}
-                  >
-                    <Check
-                      className={cn(
-                        'mr-2 h-4 w-4',
-                        vehicleType === type.value
-                          ? 'opacity-100'
-                          : 'opacity-0',
-                      )}
-                    />
-                    {type.label}
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </CommandList>
-          </Command>
-        </PopoverContent>
-      </Popover>
+    <div className="space-y-4 space-x-3 w-full">
+      <div className="flex gap-3">
+        <div className="flex-1">
+          <Label>Tipo de Veículo</Label>
+          <Popover open={typeOpen} onOpenChange={setTypeOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                role="combobox"
+                aria-expanded={typeOpen}
+                className="min-w-[200px] flex-1 justify-between"
+              >
+                {vehicleTypes.find((type) => type.value === vehicleType)?.label}
+                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="min-w-[200px] flex-1 p-0">
+              <Command>
+                <CommandInput placeholder="Buscar tipo de veículo..." />
+                <CommandList>
+                  <CommandEmpty>Nenhum tipo encontrado.</CommandEmpty>
+                  <CommandGroup>
+                    {vehicleTypes.map((type) => (
+                      <CommandItem
+                        key={type.value}
+                        value={type.value}
+                        onSelect={(currentValue) => {
+                          setVehicleType(currentValue)
+                          setSelectedBrand('')
+                          setSelectedModel('')
+                          setSelectedModelId('')
+                          setSelectedYear('')
+                          setTypeOpen(false)
+                        }}
+                      >
+                        <Check
+                          className={cn(
+                            'mr-2 h-4 w-4',
+                            vehicleType === type.value
+                              ? 'opacity-100'
+                              : 'opacity-0',
+                          )}
+                        />
+                        {type.label}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
+        </div>
 
-      <Popover open={brandOpen} onOpenChange={setBrandOpen}>
-        <PopoverTrigger asChild className="flex-1">
-          <Button
-            variant="outline"
-            role="combobox"
-            aria-expanded={brandOpen}
-            className="min-w-[200px] flex-1 justify-between"
-            disabled={!brands.length}
-          >
-            {selectedBrand
-              ? brands.find((brand) => brand.codigo === selectedBrand)?.nome
-              : 'Selecione a marca...'}
-            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="min-w-[200px] flex-1 p-0">
-          <Command>
-            <CommandInput placeholder="Buscar marca..." />
-            <CommandList>
-              <CommandEmpty>Nenhuma marca encontrada.</CommandEmpty>
-              <CommandGroup>
-                {brands.map((brand) => (
-                  <CommandItem
-                    key={brand.codigo}
-                    value={brand.codigo}
-                    onSelect={(currentValue) => {
-                      setSelectedBrand(
-                        currentValue === selectedBrand ? '' : currentValue,
-                      )
-                      setSelectedModel('')
-                      setSelectedModelId('')
-                      setSelectedYear('')
-                      setBrandOpen(false)
-                    }}
-                  >
-                    <Check
-                      className={cn(
-                        'mr-2 h-4 w-4',
-                        selectedBrand === brand.codigo
-                          ? 'opacity-100'
-                          : 'opacity-0',
-                      )}
-                    />
-                    {brand.nome}
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </CommandList>
-          </Command>
-        </PopoverContent>
-      </Popover>
+        <div className="flex-1">
+          <Label>Marca</Label>
+          <Popover open={brandOpen} onOpenChange={setBrandOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                role="combobox"
+                aria-expanded={brandOpen}
+                className="min-w-[200px] flex-1 justify-between"
+                disabled={!brands.length}
+              >
+                {selectedBrand
+                  ? brands.find((brand) => brand.codigo === selectedBrand)?.nome
+                  : 'Selecione a marca...'}
+                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="min-w-[200px] flex-1 p-0">
+              <Command>
+                <CommandInput placeholder="Buscar marca..." />
+                <CommandList>
+                  <CommandEmpty>Nenhuma marca encontrada.</CommandEmpty>
+                  <CommandGroup>
+                    {brands.map((brand) => (
+                      <CommandItem
+                        key={brand.codigo}
+                        value={brand.codigo}
+                        onSelect={(currentValue) => {
+                          setSelectedBrand(
+                            currentValue === selectedBrand ? '' : currentValue,
+                          )
+                          setSelectedModel('')
+                          setSelectedModelId('')
+                          setSelectedYear('')
+                          setBrandOpen(false)
+                        }}
+                      >
+                        <Check
+                          className={cn(
+                            'mr-2 h-4 w-4',
+                            selectedBrand === brand.codigo
+                              ? 'opacity-100'
+                              : 'opacity-0',
+                          )}
+                        />
+                        {brand.nome}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
+        </div>
+      </div>
 
-      <Popover open={modelOpen} onOpenChange={setModelOpen}>
-        <PopoverTrigger asChild className="flex-1">
-          <Button
-            variant="outline"
-            role="combobox"
-            aria-expanded={modelOpen}
-            className="min-w-[200px] flex-1 justify-between"
-            disabled={!selectedBrand}
-          >
-            {selectedModel
-              ? models.find((model) => model.codigo === selectedModelId)?.nome
-              : 'Selecione o modelo...'}
-            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="min-w-[200px] flex-1 p-0">
-          <Command>
-            <CommandInput placeholder="Buscar modelo..." />
-            <CommandList>
-              <CommandEmpty>Nenhum modelo encontrado.</CommandEmpty>
-              <CommandGroup>
-                {models.map((model) => (
-                  <CommandItem
-                    key={model.codigo}
-                    value={model.codigo}
-                    onSelect={(currentValue) => {
-                      setSelectedModel(
-                        currentValue === selectedModelId ? '' : model.nome,
-                      )
-                      setSelectedModelId(
-                        currentValue === selectedModelId ? '' : model.codigo,
-                      )
-                      setSelectedYear('')
-                      setModelOpen(false)
-                    }}
-                  >
-                    <Check
-                      className={cn(
-                        'mr-2 h-4 w-4',
-                        selectedModelId === model.codigo
-                          ? 'opacity-100'
-                          : 'opacity-0',
-                      )}
-                    />
-                    {model.nome}
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </CommandList>
-          </Command>
-        </PopoverContent>
-      </Popover>
+      <div className="flex gap-3">
+        <div className="flex-1">
+          <Label>Modelo</Label>
+          <Popover open={modelOpen} onOpenChange={setModelOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                role="combobox"
+                aria-expanded={modelOpen}
+                className="min-w-[200px] flex-1 justify-between"
+                disabled={!selectedBrand}
+              >
+                {selectedModel
+                  ? models.find((model) => model.codigo === selectedModelId)
+                      ?.nome
+                  : 'Selecione o modelo...'}
+                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="min-w-[200px] flex-1 p-0">
+              <Command>
+                <CommandInput placeholder="Buscar modelo..." />
+                <CommandList>
+                  <CommandEmpty>Nenhum modelo encontrado.</CommandEmpty>
+                  <CommandGroup>
+                    {models.map((model) => (
+                      <CommandItem
+                        key={model.codigo}
+                        value={model.codigo}
+                        onSelect={(currentValue) => {
+                          setSelectedModel(
+                            currentValue === selectedModelId ? '' : model.nome,
+                          )
+                          setSelectedModelId(
+                            currentValue === selectedModelId
+                              ? ''
+                              : model.codigo,
+                          )
+                          setSelectedYear('')
+                          setModelOpen(false)
+                        }}
+                      >
+                        <Check
+                          className={cn(
+                            'mr-2 h-4 w-4',
+                            selectedModelId === model.codigo
+                              ? 'opacity-100'
+                              : 'opacity-0',
+                          )}
+                        />
+                        {model.nome}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
+        </div>
 
-      <Popover open={yearOpen} onOpenChange={setYearOpen}>
-        <PopoverTrigger asChild className="flex-1">
-          <Button
-            variant="outline"
-            role="combobox"
-            aria-expanded={yearOpen}
-            className="min-w-[200px] flex-1 justify-between"
-            disabled={!selectedModelId}
-          >
-            {selectedYear
-              ? years.find((year) => year.codigo === selectedYear)?.nome
-              : 'Selecione o ano...'}
-            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="min-w-[200px] flex-1 p-0">
-          <Command>
-            <CommandInput placeholder="Buscar ano..." />
-            <CommandList>
-              <CommandEmpty>Nenhum ano encontrado.</CommandEmpty>
-              <CommandGroup>
-                {years.map((year) => (
-                  <CommandItem
-                    key={year.codigo}
-                    value={year.codigo}
-                    onSelect={(currentValue) => {
-                      setSelectedYear(
-                        currentValue === selectedYear ? '' : currentValue,
-                      )
-                      setYearOpen(false)
-                    }}
-                  >
-                    <Check
-                      className={cn(
-                        'mr-2 h-4 w-4',
-                        selectedYear === year.codigo
-                          ? 'opacity-100'
-                          : 'opacity-0',
-                      )}
-                    />
-                    {year.nome}
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </CommandList>
-          </Command>
-        </PopoverContent>
-      </Popover>
+        <div className="flex-1">
+          <Label>Ano</Label>
+          <Popover open={yearOpen} onOpenChange={setYearOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                role="combobox"
+                aria-expanded={yearOpen}
+                className="min-w-[200px] flex-1 justify-between"
+                disabled={!selectedModelId}
+              >
+                {selectedYear
+                  ? years.find((year) => year.codigo === selectedYear)?.nome
+                  : 'Selecione o ano...'}
+                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="min-w-[200px] flex-1 p-0">
+              <Command>
+                <CommandInput placeholder="Buscar ano..." />
+                <CommandList>
+                  <CommandEmpty>Nenhum ano encontrado.</CommandEmpty>
+                  <CommandGroup>
+                    {years.map((year) => (
+                      <CommandItem
+                        key={year.codigo}
+                        value={year.codigo}
+                        onSelect={(currentValue) => {
+                          setSelectedYear(
+                            currentValue === selectedYear ? '' : currentValue,
+                          )
+                          setYearOpen(false)
+                        }}
+                      >
+                        <Check
+                          className={cn(
+                            'mr-2 h-4 w-4',
+                            selectedYear === year.codigo
+                              ? 'opacity-100'
+                              : 'opacity-0',
+                          )}
+                        />
+                        {year.nome}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
+        </div>
+      </div>
     </div>
   )
 }

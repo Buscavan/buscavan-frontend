@@ -3,17 +3,25 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import Section from '../../components/section'
-import Card from '../../components/card'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/use-toast'
 import { useState } from 'react'
-import { VehicleSelector } from './vehicle-selector'
 import ErrorLabel from '@/components/application/error-label'
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from '@/components/ui/card'
+import Image from 'next/image'
 
 const formSchema = z.object({
+  nomeMotorista: z.string().min(1, 'Nome do motorista é obrigatório'),
+  veiculo: z.string().min(1, 'Veículo é obrigatório'),
   placa: z
     .string({
       message: 'Valor deve ser texto',
@@ -22,6 +30,7 @@ const formSchema = z.object({
     .regex(/^[A-Z]{3}[0-9][A-Z0-9][0-9]{2}$/, 'Placa inválida')
     .min(7, 'Placa deve ter 7 caracteres')
     .max(7, 'Placa deve ter 7 caracteres'),
+  modelo: z.string().min(1, 'Modelo é obrigatório'),
   capacidade: z
     .number({
       message: 'Capacidade deve ser um número',
@@ -30,17 +39,6 @@ const formSchema = z.object({
     .min(2, 'A capacidade mínima é de 2 passageiros')
     .max(200, 'A capacidade máxima é de 200 passageiros')
     .nonnegative('Capacidade deve ser um número positivo'),
-  marca: z.string().min(1, 'Marca é obrigatória'),
-  modelo: z.string().min(1, 'Modelo é obrigatório'),
-  ano: z
-    .number({
-      message: 'Ano deve ser um número',
-      required_error: 'Ano é obrigatório',
-    })
-    .min(1886, 'Ano inválido')
-    .max(new Date().getFullYear(), 'Ano inválido')
-    .nonnegative('Ano deve ser um número positivo'),
-  placeholder: z.string().min(1, 'Campo obrigatório'),
 })
 
 type FormData = z.infer<typeof formSchema>
@@ -53,6 +51,7 @@ export default function FormSettings() {
     setValue,
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
+    mode: 'onChange',
   })
   const { toast } = useToast()
   const [placaValue, setPlacaValue] = useState('')
@@ -78,55 +77,103 @@ export default function FormSettings() {
   }
 
   return (
-    <>
-      <Section>
-        <Card className="shadow-2xl">
-          <div className="w-full h-fit">
-            <h3 className="text-lg text-zinc-950 font-semibold">
-              Cadastre seu Veículo
-            </h3>
-            <p className="text-sm text-zinc-500">
-              Preencha as informações abaixo
-            </p>
-          </div>
-          <form onSubmit={handleSubmit(onSubmit)} className="w-full">
-            <div className="w-full min-h-fit flex flex-row py-4 pb-2 gap-3">
-              <div className="flex-1">
-                <Label>Placa</Label>
+    <Card>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <CardHeader>
+          <CardTitle>Cadastre seu(s) veículo(s)</CardTitle>
+          <CardDescription>
+            Insira as informações abaixo atentamente e comece a fazer viagens
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="grid grid-cols-[10rem_1fr] gap-3">
+            <div className="flex items-center justify-center relative">
+              <div className="space-y-0.5 gap-4 flex items-center justify-center flex-col w-full h-full">
+                <Image
+                  src={'/van-placeholder2.png'}
+                  alt="Imagem do Veículo"
+                  width={160}
+                  height={160}
+                  className="w-32 h-20 aspect-square bg-zinc-700 rounded-md"
+                />
+                <Button variant={'secondary'} type="button">
+                  Alterar imagem
+                </Button>
+              </div>
+            </div>
+            <div className="flex-1 space-y-4">
+              <fieldset className="flex-1 space-y-0.5">
+                <Label>Nome do Motorista</Label>
                 <Input
                   type="text"
-                  placeholder="Digite a placa"
-                  value={placaValue}
-                  onChange={handlePlacaChange}
+                  placeholder="Digite o nome do motorista"
+                  {...register('nomeMotorista')}
                 />
-                {errors.placa && (
-                  <ErrorLabel>{errors.placa.message}</ErrorLabel>
+                {errors.nomeMotorista && (
+                  <ErrorLabel>{errors.nomeMotorista.message}</ErrorLabel>
                 )}
+              </fieldset>
+              <div className="flex-1 flex gap-2">
+                <fieldset className="flex-1 space-y-0.5">
+                  <Label>Veículo</Label>
+                  <Input
+                    type="text"
+                    placeholder="Digite o veículo"
+                    {...register('veiculo')}
+                  />
+                  {errors.veiculo && (
+                    <ErrorLabel>{errors.veiculo.message}</ErrorLabel>
+                  )}
+                </fieldset>
+                <fieldset className="flex-1 space-y-0.5">
+                  <Label>Placa</Label>
+                  <Input
+                    type="text"
+                    placeholder="Selecione um veículo"
+                    value={placaValue}
+                    disabled={true}
+                    onChange={handlePlacaChange}
+                  />
+                  {errors.placa && (
+                    <ErrorLabel>{errors.placa.message}</ErrorLabel>
+                  )}
+                </fieldset>
+                <fieldset className="flex-1 space-y-0.5">
+                  <Label>Modelo</Label>
+                  <Input
+                    type="text"
+                    placeholder="Selecione um veículo"
+                    disabled={true}
+                    {...register('modelo')}
+                  />
+                  {errors.modelo && (
+                    <ErrorLabel>{errors.modelo.message}</ErrorLabel>
+                  )}
+                </fieldset>
+                <fieldset className="flex-1 space-y-0.5">
+                  <Label>Capacidade</Label>
+                  <Input
+                    type="number"
+                    min={2}
+                    max={200}
+                    placeholder="Selecione um veículo"
+                    disabled={true}
+                    {...register('capacidade', { valueAsNumber: true })}
+                  />
+                  {errors.capacidade && (
+                    <ErrorLabel>{errors.capacidade.message}</ErrorLabel>
+                  )}
+                </fieldset>
               </div>
-              <div className="flex-1">
-                <Label>Capacidade</Label>
-                <Input
-                  type="number"
-                  placeholder="Quantidade de passageiros"
-                  className="remove-arrow"
-                  {...register('capacidade', { valueAsNumber: true })}
-                />
-                {errors.capacidade && (
-                  <ErrorLabel>{errors.capacidade.message}</ErrorLabel>
-                )}
-              </div>
             </div>
-            <div className="w-full min-h-fit flex flex-row py-4 pb-2 gap-3">
-              <VehicleSelector />
-            </div>
-            <div className="flex w-full justify-end">
-              <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? 'Enviando...' : 'Enviar'}
-              </Button>
-            </div>
-          </form>
-        </Card>
-      </Section>
-    </>
+          </div>
+        </CardContent>
+        <CardFooter className="justify-end">
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? 'Salvando...' : 'Salvar alterações'}
+          </Button>
+        </CardFooter>
+      </form>
+    </Card>
   )
 }
