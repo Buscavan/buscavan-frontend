@@ -8,11 +8,14 @@ import {
 } from '@/components/ui/dialog'
 import AvatarCard from './avatar-card'
 import AvatarHolder from './avatar-holder'
+import { Button } from '@/components/ui/button'
 
 export default function Credits() {
   return (
     <Dialog>
-      <DialogTrigger>Créditos</DialogTrigger>
+      <DialogTrigger>
+        <Button variant={'outline'}>Créditos</Button>
+      </DialogTrigger>
       <DialogContent className="md:min-w-[700px]">
         <DialogHeader>
           <DialogTitle className="font-bold">Projeto de Extensão</DialogTitle>
