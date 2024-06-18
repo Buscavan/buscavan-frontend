@@ -6,6 +6,7 @@ import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
+  getPaginationRowModel,
   useReactTable,
 } from '@tanstack/react-table'
 import {
@@ -20,6 +21,7 @@ import { Button } from '@/components/ui/button'
 import { CirclePlus } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { useState } from 'react'
+import { Pagination } from '@/components/application/pagination'
 
 interface TravelsTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -38,6 +40,7 @@ export function TravelsTable<TData, TValue>({
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
     state: {
       columnFilters,
     },
@@ -108,6 +111,8 @@ export function TravelsTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
+
+      <Pagination property={table} />
     </div>
   )
 }
