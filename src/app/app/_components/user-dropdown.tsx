@@ -25,7 +25,10 @@ export function UserDropdown() {
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" className="min-w-40">
+        <Button
+          variant="outline"
+          className="min-w-40 flex justify-between items-center"
+        >
           {user ? user.name : 'Carregando...'}
           <ChevronDown
             className={cn('size-4 ml-3 transition-all', open && '-rotate-180')}
