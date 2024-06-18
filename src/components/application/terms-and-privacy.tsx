@@ -1,3 +1,6 @@
+'use client'
+
+import { useState, useEffect } from 'react'
 import {
   Dialog,
   DialogContent,
@@ -7,6 +10,12 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
+
+interface Term {
+  id: number
+  title: string
+  description: string
+}
 
 export function TermsAndPrivacy() {
   return (
@@ -20,6 +29,21 @@ export function TermsAndPrivacy() {
 }
 
 function TermsOfServiceModal() {
+  const [terms, setTerms] = useState<Term[]>([])
+
+  useEffect(() => {
+    async function fetchTerms() {
+      const response = await fetch('/api/data')
+      if (response.ok) {
+        const data = await response.json()
+        setTerms(data.terms)
+      } else {
+        console.error('Failed to fetch terms of service')
+      }
+    }
+    fetchTerms()
+  }, [])
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -35,46 +59,12 @@ function TermsOfServiceModal() {
           <DialogTitle>Termos de Serviço</DialogTitle>
         </DialogHeader>
         <DialogDescription className="max-h-[60vh] overflow-y-auto">
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur
-            vehicula malesuada lectus, vitae cursus turpis volutpat eget.
-            Integer sed sem eu orci tempor dignissim non a velit. Praesent at
-            tristique lacus, id efficitur metus. In volutpat posuere ligula, sit
-            amet pulvinar ex bibendum at. Integer varius libero a lacus
-            volutpat, nec dapibus lorem pulvinar. Maecenas ac orci nisi. Fusce
-            auctor felis nec nulla ultricies, at tempor erat cursus. Aenean
-            fermentum convallis dui et sodales. Cras fringilla metus eu orci
-            elementum, nec tincidunt erat convallis. Curabitur ut eros vitae
-            quam malesuada malesuada vel eu nisi. Cras ut vehicula magna.
-            Aliquam erat volutpat.
-          </p>
-          <p>
-            Phasellus auctor, metus vitae condimentum suscipit, justo turpis
-            blandit libero, a sollicitudin ligula elit a sapien. Curabitur nec
-            malesuada risus. Ut euismod orci eu augue cursus, in fermentum metus
-            efficitur. Nulla facilisi. Integer at erat ex. In sed bibendum
-            lacus. Nulla consectetur ligula non magna fermentum, a tincidunt
-            risus bibendum. Etiam et convallis erat. Vivamus a consectetur erat,
-            sed volutpat nunc. Sed id quam orci.
-          </p>
-          <p>
-            Suspendisse potenti. Fusce a dapibus nulla, nec tempor ipsum.
-            Vestibulum ante ipsum primis in faucibus orci luctus et ultrices
-            posuere cubilia curae; Donec ac malesuada mauris. Vivamus at erat ac
-            urna efficitur sodales non nec arcu. Nunc efficitur gravida dolor,
-            nec convallis ante vehicula in. Sed et lectus eget purus tincidunt
-            sodales. Curabitur vel laoreet turpis. Etiam posuere ligula lacus,
-            eu posuere quam vestibulum sit amet.
-          </p>
-          <p>
-            Quisque in libero a nunc molestie suscipit nec et lacus. Cras
-            tincidunt ex magna, eget fermentum orci efficitur nec. Phasellus at
-            dolor sit amet leo convallis viverra. Morbi vehicula purus sed
-            turpis tempus, nec varius felis tincidunt. Aenean tincidunt justo ac
-            felis scelerisque, eget scelerisque erat egestas. Fusce at fermentum
-            purus, in gravida justo. Integer facilisis odio quis magna convallis
-            vehicula.
-          </p>
+          {terms.map((term) => (
+            <div key={term.id}>
+              <h3 className="font-bold mt-2">{term.title}</h3>
+              <p>{term.description}</p>
+            </div>
+          ))}
         </DialogDescription>
       </DialogContent>
     </Dialog>
@@ -82,6 +72,21 @@ function TermsOfServiceModal() {
 }
 
 function PrivacyPolicyModal() {
+  const [policies, setPolicies] = useState<Term[]>([])
+
+  useEffect(() => {
+    async function fetchPolicies() {
+      const response = await fetch('/api/data')
+      if (response.ok) {
+        const data = await response.json()
+        setPolicies(data.politics)
+      } else {
+        console.error('Failed to fetch privacy policies')
+      }
+    }
+    fetchPolicies()
+  }, [])
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -97,46 +102,12 @@ function PrivacyPolicyModal() {
           <DialogTitle>Políticas de Privacidade</DialogTitle>
         </DialogHeader>
         <DialogDescription className="max-h-[60vh] overflow-y-auto">
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur
-            vehicula malesuada lectus, vitae cursus turpis volutpat eget.
-            Integer sed sem eu orci tempor dignissim non a velit. Praesent at
-            tristique lacus, id efficitur metus. In volutpat posuere ligula, sit
-            amet pulvinar ex bibendum at. Integer varius libero a lacus
-            volutpat, nec dapibus lorem pulvinar. Maecenas ac orci nisi. Fusce
-            auctor felis nec nulla ultricies, at tempor erat cursus. Aenean
-            fermentum convallis dui et sodales. Cras fringilla metus eu orci
-            elementum, nec tincidunt erat convallis. Curabitur ut eros vitae
-            quam malesuada malesuada vel eu nisi. Cras ut vehicula magna.
-            Aliquam erat volutpat.
-          </p>
-          <p>
-            Phasellus auctor, metus vitae condimentum suscipit, justo turpis
-            blandit libero, a sollicitudin ligula elit a sapien. Curabitur nec
-            malesuada risus. Ut euismod orci eu augue cursus, in fermentum metus
-            efficitur. Nulla facilisi. Integer at erat ex. In sed bibendum
-            lacus. Nulla consectetur ligula non magna fermentum, a tincidunt
-            risus bibendum. Etiam et convallis erat. Vivamus a consectetur erat,
-            sed volutpat nunc. Sed id quam orci.
-          </p>
-          <p>
-            Suspendisse potenti. Fusce a dapibus nulla, nec tempor ipsum.
-            Vestibulum ante ipsum primis in faucibus orci luctus et ultrices
-            posuere cubilia curae; Donec ac malesuada mauris. Vivamus at erat ac
-            urna efficitur sodales non nec arcu. Nunc efficitur gravida dolor,
-            nec convallis ante vehicula in. Sed et lectus eget purus tincidunt
-            sodales. Curabitur vel laoreet turpis. Etiam posuere ligula lacus,
-            eu posuere quam vestibulum sit amet.
-          </p>
-          <p>
-            Quisque in libero a nunc molestie suscipit nec et lacus. Cras
-            tincidunt ex magna, eget fermentum orci efficitur nec. Phasellus at
-            dolor sit amet leo convallis viverra. Morbi vehicula purus sed
-            turpis tempus, nec varius felis tincidunt. Aenean tincidunt justo ac
-            felis scelerisque, eget scelerisque erat egestas. Fusce at fermentum
-            purus, in gravida justo. Integer facilisis odio quis magna convallis
-            vehicula.
-          </p>
+          {policies.map((policy) => (
+            <div key={policy.id}>
+              <h3 className="font-bold mt-2">{policy.title}</h3>
+              <p>{policy.description}</p>
+            </div>
+          ))}
         </DialogDescription>
       </DialogContent>
     </Dialog>

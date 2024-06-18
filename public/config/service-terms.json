@@ -1,0 +1,77 @@
+[
+  {
+    "id": 1,
+    "title": "Aceitação dos Termos",
+    "description": "Ao acessar e utilizar nossos serviços, você concorda em cumprir e estar legalmente vinculado aos termos e condições estabelecidos neste documento (\"Termos de Serviço\"). Se você não concordar com algum desses termos, por favor, não use nossos serviços."
+  },
+  {
+    "id": 2,
+    "title": "Modificações dos Termos",
+    "description": "Reservamo-nos o direito de modificar ou atualizar estes Termos de Serviço a qualquer momento, sem aviso prévio. Quaisquer alterações serão postadas em nosso site e entrarão em vigor imediatamente após a publicação. É sua responsabilidade revisar periodicamente estes termos para se manter informado sobre quaisquer atualizações."
+  },
+  {
+    "id": 3,
+    "title": "Serviços Oferecidos",
+    "description": "Nossos serviços incluem, mas não se limitam a, [descreva brevemente os serviços oferecidos]. Nos esforçamos para fornecer serviços de alta qualidade, mas não garantimos que nossos serviços serão isentos de erros ou interrupções."
+  },
+  {
+    "id": 4,
+    "title": "Uso Aceitável",
+    "description": "Você concorda em usar nossos serviços apenas para fins legais e de acordo com estes Termos de Serviço. Você concorda em não usar os serviços para:\n1. Publicar ou transmitir qualquer conteúdo que seja ilegal, ameaçador, difamatório, obsceno, ou de qualquer forma ofensivo;\n2. Violar os direitos de privacidade, propriedade intelectual, ou outros direitos de qualquer pessoa ou entidade;\n3. Participar de qualquer atividade que possa interromper ou danificar nossos serviços ou servidores."
+  },
+  {
+    "id": 5,
+    "title": "Conta de Usuário",
+    "description": "Para acessar certos recursos dos nossos serviços, você pode precisar criar uma conta de usuário. Você é responsável por manter a confidencialidade das informações da sua conta e por todas as atividades que ocorrem sob sua conta. Notifique-nos imediatamente sobre qualquer uso não autorizado da sua conta."
+  },
+  {
+    "id": 6,
+    "title": "Privacidade",
+    "description": "Sua privacidade é importante para nós. Nossa política de privacidade descreve como coletamos, usamos e protegemos suas informações pessoais. Ao usar nossos serviços, você concorda com a coleta e uso de suas informações conforme descrito em nossa política de privacidade."
+  },
+  {
+    "id": 7,
+    "title": "Propriedade Intelectual",
+    "description": "Todo o conteúdo, incluindo, mas não se limitando a, texto, imagens, gráficos, logotipos e software, disponível através dos nossos serviços é de nossa propriedade ou de nossos licenciadores e está protegido por leis de direitos autorais e outras leis de propriedade intelectual. Você concorda em não reproduzir, distribuir, modificar ou criar trabalhos derivados de qualquer conteúdo sem nossa permissão expressa por escrito."
+  },
+  {
+    "id": 8,
+    "title": "Isenção de Garantias",
+    "description": "Nossos serviços são fornecidos \"como estão\" e \"conforme disponíveis\". Não oferecemos garantias de qualquer tipo, expressas ou implícitas, sobre a operação dos nossos serviços ou as informações, conteúdos, materiais ou produtos incluídos nos nossos serviços."
+  },
+  {
+    "id": 9,
+    "title": "Limitação de Responsabilidade",
+    "description": "Em nenhum caso seremos responsáveis por quaisquer danos diretos, indiretos, incidentais, especiais ou consequenciais decorrentes do uso ou da incapacidade de usar nossos serviços, mesmo se formos avisados da possibilidade de tais danos."
+  },
+  {
+    "id": 10,
+    "title": "Indenização",
+    "description": "Você concorda em indenizar, defender e isentar nossa empresa e seus afiliados, diretores, funcionários e agentes de e contra todas e quaisquer reivindicações, responsabilidades, danos, perdas ou despesas decorrentes do seu uso dos nossos serviços ou da violação destes Termos de Serviço."
+  },
+  {
+    "id": 11,
+    "title": "Lei Aplicável",
+    "description": "Estes Termos de Serviço serão regidos e interpretados de acordo com as leis do Brasil, sem considerar seus conflitos de princípios legais."
+  },
+  {
+    "id": 12,
+    "title": "Rescisão",
+    "description": "Reservamo-nos o direito de suspender ou encerrar sua conta e acesso aos nossos serviços a qualquer momento, sem aviso prévio, por qualquer motivo, incluindo, sem limitação, a violação destes Termos de Serviço."
+  },
+  {
+    "id": 13,
+    "title": "Disposições Gerais",
+    "description": "Se qualquer disposição destes Termos de Serviço for considerada inválida ou inaplicável, as demais disposições permanecerão em pleno vigor e efeito. Estes Termos de Serviço constituem o acordo completo entre você e nossa empresa com relação ao uso dos nossos serviços."
+  },
+  {
+    "id": 14,
+    "title": "Contato",
+    "description": "Se você tiver alguma dúvida sobre estes Termos de Serviço, entre em contato conosco através de [informações de contato, como e-mail ou endereço físico]."
+  },
+  {
+    "id": 15,
+    "title": "Última atualização",
+    "description": "[Data]"
+  }
+]
