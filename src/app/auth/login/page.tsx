@@ -2,6 +2,16 @@ import { Button } from '@/components/ui/button'
 import { LoginForm } from './_components/login-form'
 import { Separator } from '@/components/ui/separator'
 import Link from 'next/link'
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogTitle,
+  DialogHeader,
+  DialogDescription,
+} from '@/components/ui/dialog'
+import { LuBaggageClaim } from 'react-icons/lu'
+import { BiBus } from 'react-icons/bi'
 
 export const metadata = {
   title: 'Login',
@@ -30,9 +40,39 @@ export default function LoginPage() {
           <Separator className="flex-1" />
         </div>
 
-        <Button variant="outline" className="w-full" asChild>
-          <Link href="/auth/register">Cadastre-se em nossa plataforma</Link>
-        </Button>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button
+              variant="outline"
+              className="w-full hover:cursor-pointer"
+              asChild
+            >
+              <p>Cadastre-se em nossa plataforma</p>
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Você é?</DialogTitle>
+              <DialogDescription>
+                Escolha como prosseguir com o cadastro
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex justify-between items-center gap-2">
+              <Button variant="outline" className="w-full" asChild>
+                <Link href="/auth/register/partner" className="mr-2 flex gap-2">
+                  <BiBus />
+                  <p>Motorista</p>
+                </Link>
+              </Button>
+              <Button variant="default" className="w-full" asChild>
+                <Link href="/auth/register" className="mr-2 flex gap-2">
+                  <LuBaggageClaim />
+                  <p>Passageiro</p>
+                </Link>
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </section>
   )

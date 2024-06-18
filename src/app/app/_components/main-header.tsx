@@ -25,7 +25,7 @@ export function MainHeader() {
     <Header>
       <HeaderContent>
         <HeaderContentNav>
-          <Logo path="/search" />
+          <Logo path="/app/search" />
 
           <Separator orientation="vertical" className="h-3.5" />
 

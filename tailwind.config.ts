@@ -75,7 +75,7 @@ const config = {
       backgroundImage: {
         'auth-gradient':
           'linear-gradient(90deg, rgba(2,44,34,1), rgba(4,120,87,1))',
-        auth: "linear-gradient(90deg, #00000025, #00000025), url('/auth.jpg')",
+        login: "linear-gradient(90deg, #00000025, #00000025), url('/auth.jpg')",
         register:
           "linear-gradient(90deg, #00000025, #00000025), url('/register.png')",
         partner:

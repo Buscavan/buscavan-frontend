@@ -94,7 +94,7 @@ export function RegisterForm() {
 
       <Button type="submit" className="w-full" disabled={isSubmitting}>
         {isSubmitting && <Loader2 className="size-4 mr-2 animate-spin" />}
-        {isSubmitting ? 'Entrando...' : 'Cadastrar-se no Sistema'}
+        {isSubmitting ? 'Entrando...' : 'Cadastrar-se na Plataforma'}
       </Button>
     </form>
   )
