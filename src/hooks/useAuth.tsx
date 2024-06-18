@@ -17,6 +17,7 @@ import { useToast } from '@/components/ui/use-toast'
 import { api } from '@/api/axios'
 
 interface User {
+  phone?: string
   email: string
   name: string
   cpf: string
