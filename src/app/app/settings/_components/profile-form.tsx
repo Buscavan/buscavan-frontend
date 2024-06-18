@@ -17,6 +17,9 @@ import { z } from 'zod'
 import { useAuth } from '@/hooks/useAuth'
 import ErrorLabel from '@/components/application/error-label'
 import { useToast } from '@/components/ui/use-toast'
+import { CPFInput } from '@/components/application/cpf-input'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { PhoneNumberInput } from '@/components/application/phone-number-input'
 
 const profileFormSchema = z.object({
   name: z
@@ -28,6 +31,9 @@ const profileFormSchema = z.object({
   cpf: z
     .string({ required_error: 'Por favor, informe seu CPF' })
     .min(14, 'CPF inválido'),
+  phone: z
+    .string({ required_error: 'Por favor, informe seu telefone' })
+    .min(14, 'Telefone inválido'),
 })
 
 type ProfileFormSchema = z.infer<typeof profileFormSchema>
@@ -40,6 +46,8 @@ export function ProfileForm() {
   const {
     register,
     handleSubmit,
+    setValue,
+    getValues,
     formState: { errors, isSubmitting },
   } = useForm<ProfileFormSchema>({
     resolver: zodResolver(profileFormSchema),
@@ -47,6 +55,7 @@ export function ProfileForm() {
       name: user?.name || '',
       email: user?.email || '',
       cpf: user?.cpf || '',
+      phone: user?.phone || '',
     },
   })
 
@@ -80,36 +89,64 @@ export function ProfileForm() {
       </CardHeader>
       <form onSubmit={handleSubmit(onSubmit)}>
         <CardContent className="space-y-3">
-          <fieldset className="space-y-0.5">
-            <Label htmlFor="name">Nome</Label>
-            <Input
-              id="name"
-              placeholder="Digite seu nome"
-              {...register('name')}
-            />
-            {errors.name && <ErrorLabel>{errors.name?.message}</ErrorLabel>}
-          </fieldset>
+          <div className="grid grid-cols-[10rem_1fr] gap-3">
+            <div className="space-y-0.5 gap-4 flex items-center justify-center flex-col">
+              <Avatar className="w-32 h-32">
+                <AvatarImage src="https://github.com/shadcn.png" />
+                <AvatarFallback>CN</AvatarFallback>
+              </Avatar>
+              <Button variant={'secondary'} type="button">
+                Alterar Imagem
+              </Button>
+            </div>
+            <div>
+              <div className="grid grid-cols-[1fr_10rem] gap-3">
+                <fieldset className="space-y-0.5">
+                  <Label htmlFor="name">Nome</Label>
+                  <Input
+                    id="name"
+                    placeholder="Digite seu nome"
+                    {...register('name')}
+                  />
+                  {errors.name && (
+                    <ErrorLabel>{errors.name?.message}</ErrorLabel>
+                  )}
+                </fieldset>
+                <fieldset className="space-y-0.5">
+                  <PhoneNumberInput
+                    name="phone"
+                    register={register}
+                    errors={errors}
+                    setValue={setValue}
+                    getValues={getValues}
+                  />
+                </fieldset>
+              </div>
 
-          <div className="grid grid-cols-[1fr_10rem] gap-3">
-            <fieldset className="space-y-0.5">
-              <Label htmlFor="email">E-mail</Label>
-              <Input
-                id="email"
-                placeholder="Digite seu e-mail"
-                {...register('email')}
-              />
-              {errors.email && <ErrorLabel>{errors.email?.message}</ErrorLabel>}
-            </fieldset>
+              <div className="grid grid-cols-[1fr_10rem] gap-3">
+                <fieldset className="space-y-0.5">
+                  <Label htmlFor="email">E-mail</Label>
+                  <Input
+                    id="email"
+                    placeholder="Digite seu e-mail"
+                    {...register('email')}
+                  />
+                  {errors.email && (
+                    <ErrorLabel>{errors.email?.message}</ErrorLabel>
+                  )}
+                </fieldset>
 
-            <fieldset className="space-y-0.5">
-              <Label htmlFor="cpf">CPF</Label>
-              <Input
-                id="cpf"
-                placeholder="000.000.000-00"
-                {...register('cpf')}
-              />
-              {errors.cpf && <ErrorLabel>{errors.cpf?.message}</ErrorLabel>}
-            </fieldset>
+                <fieldset className="space-y-0.5">
+                  <CPFInput
+                    name="cpf"
+                    register={register}
+                    errors={errors}
+                    setValue={setValue}
+                    getValues={getValues}
+                  />
+                </fieldset>
+              </div>
+            </div>
           </div>
         </CardContent>
         <CardFooter className="justify-end">
