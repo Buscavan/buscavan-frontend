@@ -85,7 +85,7 @@ export function ProfileForm() {
     <Card>
       <CardHeader>
         <CardTitle>Meu perfil</CardTitle>
-        <CardDescription>Atualize suas informações de perfil.</CardDescription>
+        <CardDescription>Atualize suas informações de perfil</CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit(onSubmit)}>
         <CardContent className="space-y-3">
