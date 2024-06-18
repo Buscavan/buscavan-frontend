@@ -125,7 +125,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
 
       setUser({ id, name, email, cpf })
 
-      router.push('/inicio')
+      router.push('/app/search')
     } catch (error) {
       toast({
         title: 'Login falhou',
@@ -152,7 +152,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
         description: 'Sua conta foi criada com sucesso.',
       })
 
-      router.push('/inicio')
+      router.push('/app/search')
     } catch (error) {
       toast({
         title: 'Falha no registro',
