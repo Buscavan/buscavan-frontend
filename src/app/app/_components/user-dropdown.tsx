@@ -36,11 +36,17 @@ export function UserDropdown() {
         <DropdownMenuLabel>Menu</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem onClick={() => router.push('/app/settings')}>
+          <DropdownMenuItem
+            className="hover:cursor-pointer"
+            onClick={() => router.push('/app/settings')}
+          >
             <User className="size-4 mr-2" />
             Perfil
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => router.push('/app/about')}>
+          <DropdownMenuItem
+            className="hover:cursor-pointer"
+            onClick={() => router.push('/app/about')}
+          >
             <Info className="size-4 mr-2" />
             Sobre
           </DropdownMenuItem>
@@ -48,7 +54,7 @@ export function UserDropdown() {
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={() => logout()}
-          className="bg-red-600 focus:bg-red-600/90 text-white focus:text-white"
+          className="bg-red-600 focus:bg-red-600/90 text-white focus:text-white hover:cursor-pointer"
         >
           <LogOut className="size-4 mr-2" />
           Sair
