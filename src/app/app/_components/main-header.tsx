@@ -12,6 +12,7 @@ import { ModeToggle } from '@/components/application/mode-toggle'
 import { Separator } from '@/components/ui/separator'
 import { MapPinned, Search, User } from 'lucide-react'
 import { usePathname } from 'next/navigation'
+import { UserDropdown } from './user-dropdown'
 
 export function MainHeader() {
   const pathname = usePathname()
@@ -50,6 +51,7 @@ export function MainHeader() {
 
         <HeaderContentActions>
           <ModeToggle />
+          <UserDropdown />
         </HeaderContentActions>
       </HeaderContent>
     </Header>

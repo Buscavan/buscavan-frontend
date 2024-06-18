@@ -57,7 +57,7 @@ export function HeaderContentNavLink({
       href={path}
       className={cn(
         'flex items-center text-sm text-muted-foreground',
-        active && 'text-primary',
+        active && 'text-primary font-medium',
         className,
       )}
     >
