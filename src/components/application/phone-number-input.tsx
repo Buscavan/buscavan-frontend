@@ -27,6 +27,7 @@ interface PhoneNumberInputProps<T extends FieldValues> {
   setValue: UseFormSetValue<T>
   getValues: UseFormGetValues<T>
   className?: string
+  disabled?: boolean
 }
 
 export function PhoneNumberInput<T extends FieldValues>({
@@ -36,6 +37,7 @@ export function PhoneNumberInput<T extends FieldValues>({
   setValue,
   getValues,
   className,
+  disabled,
 }: PhoneNumberInputProps<T>) {
   const [value, setValueState] = useState<string>('')
 
@@ -58,6 +60,7 @@ export function PhoneNumberInput<T extends FieldValues>({
         id={name as string}
         placeholder="(00) 00000-0000"
         value={value}
+        disabled={disabled}
         {...register(name)}
         onChange={handleChange}
       />

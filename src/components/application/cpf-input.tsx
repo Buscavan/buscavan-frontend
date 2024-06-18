@@ -28,6 +28,7 @@ interface CPFInputProps<T extends FieldValues> {
   setValue: UseFormSetValue<T>
   getValues: UseFormGetValues<T>
   className?: string
+  disabled?: boolean
 }
 
 export function CPFInput<T extends FieldValues>({
@@ -37,6 +38,7 @@ export function CPFInput<T extends FieldValues>({
   setValue,
   getValues,
   className,
+  disabled,
 }: CPFInputProps<T>) {
   const [value, setValueState] = useState<string>('')
 
@@ -59,6 +61,7 @@ export function CPFInput<T extends FieldValues>({
         id={name as string}
         placeholder="000.000.000-00"
         value={value}
+        disabled={disabled}
         {...register(name)}
         onChange={handleChange}
       />
