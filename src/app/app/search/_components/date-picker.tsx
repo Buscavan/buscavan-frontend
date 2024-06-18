@@ -51,7 +51,7 @@ export function DatePicker({
               ) : (
                 <span>Escolha uma data...</span>
               )}
-              <CalendarIcon className="h-4 w-4 text-black/50" />
+              <CalendarIcon className="h-4 w-4 text-black/50 dark:text-white/50" />
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0">
