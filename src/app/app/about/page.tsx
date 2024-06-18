@@ -34,9 +34,7 @@ export default function About() {
           suspendisse tortor id.
         </p>
       </article>
-      <Section>
-        <Credits />
-      </Section>
+      <Credits />
     </>
   )
 }
