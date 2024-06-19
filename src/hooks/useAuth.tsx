@@ -15,8 +15,11 @@ import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import { useToast } from '@/components/ui/use-toast'
 import { api } from '@/api/axios'
+import { endpoints } from '@/api/endpoints'
 
 interface User {
+  fotoPerfilUrl?: string
+  fotoCnhUrl?: string
   phone?: string
   email: string
   name: string
@@ -41,12 +44,14 @@ interface LoginResponse {
   expiresIn: Date | number
   user: {
     id: number
+    cpf: string
     name: string
     email: string
-    cpf: string
-    password: string
-    updatedAt: string
-    createdAt: string
+    password?: string
+    updatedAt?: string
+    createdAt?: string
+    fotoCnhUrl?: string
+    fotoPerfilUrl?: string
   }
 }
 
@@ -92,7 +97,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
         user: User
         token: string
         refresh_token: string
-      }>(`${process.env.API_ENDPOINT}/auth/refreshToken`, {
+      }>(`${process.env.API_ENDPOINT}${endpoints.validateRefreshToken}`, {
         refreshToken: refreshTokenToValidate,
       })
 
@@ -115,16 +120,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
 
   const login = async (data: LoginFormInputs): Promise<void> => {
     try {
-      const response = await api.post<LoginResponse>('/auth/login', data)
+      const response = await api.post<LoginResponse>(endpoints.login, data)
       const {
         token,
-        user: { id, name, email, cpf },
+        user: { id, cpf, name, email, fotoCnhUrl, fotoPerfilUrl },
       } = response.data
 
       Cookies.set('token', token, { expires: 7 })
       // Cookies.set('refreshToken', refreshToken, { expires: 14 })
 
-      setUser({ id, name, email, cpf })
+      setUser({ id, name, email, cpf, fotoCnhUrl, fotoPerfilUrl })
 
       router.push('/app/search')
     } catch (error) {
@@ -139,7 +144,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
 
   const register = async (data: RegisterFormInputs): Promise<void> => {
     try {
-      const response = await api.post<RegisterResponse>('/auth/register', data)
+      const response = await api.post<RegisterResponse>(
+        endpoints.registerUser,
+        data,
+      )
       // console.log(response.data)
       const { token, id, name, email, cpf } = response.data
 

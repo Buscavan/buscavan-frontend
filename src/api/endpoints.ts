@@ -1,0 +1,15 @@
+export const endpoints = {
+  registerUser: '/auth/register',
+  login: '/auth/login',
+  validateRefreshToken: '/auth/refreshToken',
+  updateUser: '/users/{id}',
+  listUsers: '/users',
+  getUser: '/users/{id}',
+  deleteUser: '/users/{id}',
+  registerVehicle: '/veiculo',
+  listVehicles: '/veiculo',
+  getVehicleByDriver: '/veiculo/{id_motorista}',
+  deleteVehicle: '/veiculo/{id}',
+  updateVehicle: '/veiculo/{id}',
+  uploadProfileImage: '/upload/user/perfil/{ìd}',
+}
