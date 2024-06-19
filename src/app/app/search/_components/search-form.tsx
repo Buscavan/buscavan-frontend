@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import { ListFilter, Loader2, Search } from 'lucide-react'
+import { Loader2, Search } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -82,7 +82,7 @@ export function SearchForm() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="grid grid-cols-[1fr_auto_auto] gap-5"
+      className="grid grid-cols-[1fr_auto_auto] items-center gap-5"
     >
       <div className="grid grid-cols-4 gap-3">
         <fieldset className="flex flex-col gap-0.5">
@@ -116,11 +116,6 @@ export function SearchForm() {
       <Separator orientation="vertical" className="h-7" />
 
       <div className="flex items-center gap-3">
-        <Button variant="link" className="px-0">
-          <ListFilter className="size-4 mr-2" />
-          Filtros
-        </Button>
-
         <Button type="submit" disabled={isSubmitting}>
           {isSubmitting ? (
             <Loader2 className="size-4 mr-2 animate-spin" />
