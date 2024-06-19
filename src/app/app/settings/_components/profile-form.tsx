@@ -22,6 +22,19 @@ import { useToast } from '@/components/ui/use-toast'
 import { CPFInput } from '@/components/application/cpf-input'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { PhoneNumberInput } from '@/components/application/phone-number-input'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
+import { Dropzone } from '@/components/application/dropzone'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { WebcamCapture } from '@/components/application/webcam-capture'
+import { api } from '@/api/axios'
+import { endpoints } from '@/api/endpoints'
 
 const profileFormSchema = z.object({
   name: z
@@ -33,9 +46,7 @@ const profileFormSchema = z.object({
   cpf: z
     .string({ required_error: 'Por favor, informe seu CPF' })
     .min(14, 'CPF inválido'),
-  phone: z
-    .string({ required_error: 'Por favor, informe seu telefone' })
-    .min(14, 'Telefone inválido'),
+  phone: z.string(),
 })
 
 type ProfileFormSchema = z.infer<typeof profileFormSchema>
@@ -44,6 +55,8 @@ export function ProfileForm() {
   const { user, setUser } = useAuth()
   const { toast } = useToast()
   const [isEditing, setIsEditing] = useState(false)
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [profileImage, setProfileImage] = useState<File | string | null>(null)
 
   const {
     register,
@@ -51,6 +64,7 @@ export function ProfileForm() {
     setValue,
     getValues,
     formState: { errors, isSubmitting },
+    clearErrors,
   } = useForm<ProfileFormSchema>({
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
@@ -63,19 +77,28 @@ export function ProfileForm() {
 
   async function onSubmit(data: ProfileFormSchema) {
     try {
-      setUser({
-        id: user!.id,
-        name: data.name,
-        email: data.email,
-        cpf: data.cpf,
-        phone: data.phone,
-      })
-      setIsEditing(false)
+      const response = await api.put(
+        `${endpoints.updateUser.replace('{id}', user!.id.toString())}`,
+        data,
+      )
 
-      toast({
-        title: 'Perfil atualizado!',
-        description: 'Seu perfil foi atualizado com sucesso.',
-      })
+      if (response) {
+        setUser({
+          ...user!,
+          name: data.name,
+          email: data.email,
+          cpf: data.cpf,
+          phone: data.phone,
+        })
+        setIsEditing(false)
+
+        toast({
+          title: 'Perfil atualizado!',
+          description: 'Seu perfil foi atualizado com sucesso.',
+        })
+      } else {
+        throw new Error('Failed to update profile')
+      }
     } catch (err) {
       toast({
         title: 'Algo deu errado!',
@@ -83,6 +106,55 @@ export function ProfileForm() {
         variant: 'destructive',
       })
     }
+  }
+
+  async function onSaveProfileImage() {
+    if (profileImage) {
+      const formData = new FormData()
+      if (typeof profileImage === 'string') {
+        const response = await fetch(profileImage)
+        const blob = await response.blob()
+        formData.append(
+          'file',
+          new File([blob], 'profile.jpg', { type: 'image/jpeg' }),
+        )
+      } else {
+        formData.append('file', profileImage)
+      }
+
+      try {
+        const response = await api.post(
+          `${endpoints.uploadProfileImage.replace('{id}', user!.id.toString())}`,
+          formData,
+        )
+
+        if (response) {
+          setUser({ ...user!, fotoPerfilUrl: response.data.url })
+          setIsDialogOpen(false)
+          toast({
+            title: 'Imagem de perfil atualizada!',
+            description: 'Sua imagem de perfil foi atualizada com sucesso.',
+          })
+        } else {
+          throw new Error('Failed to upload profile image')
+        }
+      } catch (err) {
+        toast({
+          title: 'Algo deu errado!',
+          description: 'Falha ao enviar a imagem. Tente novamente.',
+          variant: 'destructive',
+        })
+      }
+    }
+  }
+
+  function resetForm() {
+    setValue('name', user?.name || '')
+    setValue('email', user?.email || '')
+    setValue('cpf', user?.cpf || '')
+    setValue('phone', user?.phone || '')
+    clearErrors()
+    setIsEditing(false)
   }
 
   return (
@@ -96,12 +168,57 @@ export function ProfileForm() {
           <div className="grid grid-cols-[10rem_1fr] gap-3">
             <div className="space-y-0.5 gap-4 flex items-center justify-center flex-col">
               <Avatar className="w-32 h-32">
-                <AvatarImage src="https://github.com/shadcn.png" />
-                <AvatarFallback>CN</AvatarFallback>
+                <AvatarImage src={user?.fotoPerfilUrl} />
+                <AvatarFallback>{user?.name || 'CARREGANDO'}</AvatarFallback>
               </Avatar>
-              <Button variant={'secondary'} type="button">
-                Alterar Imagem
-              </Button>
+              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button variant={'secondary'} type="button">
+                    Alterar Imagem
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Alterar Imagem</DialogTitle>
+                    <DialogDescription>
+                      Arraste e solte uma imagem ou clique para selecionar um
+                      arquivo.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <Tabs defaultValue="upload" className="w-full">
+                    <TabsList className="grid w-full grid-cols-2">
+                      <TabsTrigger value="upload">Upload</TabsTrigger>
+                      <TabsTrigger value="camera">Câmera</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="upload">
+                      <Dropzone
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        onChange={(files: any) => {
+                          setProfileImage(files[0])
+                          onSaveProfileImage()
+                        }}
+                        onClose={() => {
+                          setIsDialogOpen(false)
+                          onSaveProfileImage()
+                        }}
+                      />
+                    </TabsContent>
+                    <TabsContent value="camera">
+                      <WebcamCapture
+                        onSave={(image) => {
+                          setProfileImage(image)
+                          onSaveProfileImage()
+                        }}
+                        onRemove={() => setProfileImage(null)}
+                        onClose={() => {
+                          setIsDialogOpen(false)
+                          onSaveProfileImage()
+                        }}
+                      />
+                    </TabsContent>
+                  </Tabs>
+                </DialogContent>
+              </Dialog>
             </div>
             <div className="flex-1 space-y-3">
               <div className="grid grid-cols-[1fr_10rem] gap-3">
@@ -121,7 +238,7 @@ export function ProfileForm() {
                   <PhoneNumberInput
                     name="phone"
                     register={register}
-                    errors={errors}
+                    errors={{}}
                     setValue={setValue}
                     getValues={getValues}
                     disabled={!isEditing}
@@ -157,11 +274,16 @@ export function ProfileForm() {
             </div>
           </div>
         </CardContent>
-        <CardFooter className="justify-end">
+        <CardFooter className="justify-end space-x-2">
           {isEditing ? (
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? 'Salvando...' : 'Salvar alterações'}
-            </Button>
+            <>
+              <Button variant="outline" type="button" onClick={resetForm}>
+                Cancelar
+              </Button>
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? 'Salvando...' : 'Salvar alterações'}
+              </Button>
+            </>
           ) : (
             <Button
               type="button"

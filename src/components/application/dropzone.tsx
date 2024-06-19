@@ -3,18 +3,18 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import Image from 'next/image'
 
-interface DropzoneProps {
-  onChange: React.Dispatch<React.SetStateAction<string[]>>
-  onClose: () => void // Add this line
+interface DropzoneProps<T> {
+  onChange: React.Dispatch<React.SetStateAction<T[]>>
+  onClose: () => void
   className?: string
 }
 
-export function Dropzone({
+export function Dropzone<T>({
   onChange,
   onClose,
   className,
   ...props
-}: DropzoneProps) {
+}: DropzoneProps<T>) {
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const [fileInfo, setFileInfo] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -53,7 +53,11 @@ export function Dropzone({
 
     const fileSizeInKB = Math.round(uploadedFile.size / 1024)
     const fileUrl = URL.createObjectURL(uploadedFile)
-    onChange([fileUrl])
+    if (typeof fileUrl === 'string') {
+      onChange([fileUrl] as unknown as T[]) // Explicitly cast to T[]
+    } else {
+      onChange([uploadedFile] as unknown as T[]) // Explicitly cast to T[]
+    }
     setFileInfo(`Arquivo enviado: ${uploadedFile.name} (${fileSizeInKB} KB)`)
     setError(null)
     setImageUrl(fileUrl)
@@ -68,7 +72,7 @@ export function Dropzone({
   const handleRemove = () => {
     setFileInfo(null)
     setImageUrl(null)
-    onChange([])
+    onChange([] as T[]) // Explicitly cast to T[]
   }
 
   return (
