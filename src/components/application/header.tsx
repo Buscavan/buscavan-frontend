@@ -11,7 +11,7 @@ export function Header({ className, children }: HeaderGenericProps) {
   return (
     <header
       className={cn(
-        'fixed top-0 left-0 w-full h-16 flex items-center bg-background border-b',
+        'fixed top-0 left-0 w-full h-16 flex items-center bg-background border-b z-10',
         className,
       )}
     >
