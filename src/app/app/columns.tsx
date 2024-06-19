@@ -53,7 +53,7 @@ export const columns: ColumnDef<Travel>[] = [
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button variant="ghost" className="size-8 p-0">
-                <Trash2 className="size-4" />
+                <Trash2 className="size-[1.125rem] text-red-600 dark:text-red-500" />
               </Button>
             </AlertDialogTrigger>
             <DeleteTravelModal travelId={travel.id} />
