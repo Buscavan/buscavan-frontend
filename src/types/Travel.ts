@@ -3,7 +3,7 @@ export interface Travel {
   destiny: string
   exitLocale: string
   vehicle: string
-  intialDate: string
+  initialDate: string
   endDate: string
   value: number
 }

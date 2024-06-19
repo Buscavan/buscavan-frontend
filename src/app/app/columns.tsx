@@ -4,6 +4,8 @@ import { ColumnDef } from '@tanstack/react-table'
 import { Button } from '@/components/ui/button'
 import { Travel } from '@/types/Travel'
 import { Trash2 } from 'lucide-react'
+import { AlertDialog, AlertDialogTrigger } from '@/components/ui/alert-dialog'
+import { DeleteTravelModal } from './_components/delete-travel-modal'
 
 export const columns: ColumnDef<Travel>[] = [
   {
@@ -19,7 +21,7 @@ export const columns: ColumnDef<Travel>[] = [
     header: 'Veículo',
   },
   {
-    accessorKey: 'intialDate',
+    accessorKey: 'initialDate',
     header: 'Data de Ida',
   },
   {
@@ -48,13 +50,14 @@ export const columns: ColumnDef<Travel>[] = [
 
       return (
         <div className="flex justify-center">
-          <Button
-            variant="ghost"
-            className="size-8 p-0"
-            onClick={() => console.log(travel.id)}
-          >
-            <Trash2 className="size-4" />
-          </Button>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="ghost" className="size-8 p-0">
+                <Trash2 className="size-4" />
+              </Button>
+            </AlertDialogTrigger>
+            <DeleteTravelModal travelId={travel.id} />
+          </AlertDialog>
         </div>
       )
     },
