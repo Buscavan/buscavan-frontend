@@ -47,7 +47,11 @@ export function DatePicker({
               )}
             >
               {field.value ? (
-                format(field.value, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })
+                <span>
+                  {format(field.value, "dd 'de' MMMM 'de' yyyy", {
+                    locale: ptBR,
+                  })}
+                </span>
               ) : (
                 <span>Escolha uma data...</span>
               )}
