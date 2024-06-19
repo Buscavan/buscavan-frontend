@@ -1,15 +1,14 @@
 'use client'
 
-import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { ListFilter, Loader2, Search } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import ErrorLabel from '../../../../components/application/error-label'
-import { CityFill } from './city-fill'
-import { DatePicker } from './date-picker'
+import ErrorLabel from '@/components/application/error-label'
+import { CityFill } from '@/components/application/city-fill'
+import { DatePicker } from '@/components/application/date-picker'
 import { useEffect } from 'react'
 import { useToast } from '@/components/ui/use-toast'
 
@@ -18,13 +17,13 @@ const searchFormSchema = z.object({
   destiny: z.string().min(1, 'Por favor, informe a cidade de destino'),
   initialDate: z
     .date()
-    .nullable()
+    .optional()
     .refine((val) => val !== null, {
       message: 'Por favor, selecione a data de início',
     }),
   endDate: z
     .date()
-    .nullable()
+    .optional()
     .refine((val) => val !== null, {
       message: 'Por favor, selecione a data de término',
     }),

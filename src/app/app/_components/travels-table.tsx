@@ -17,11 +17,10 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { Button } from '@/components/ui/button'
-import { CirclePlus } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { useState } from 'react'
 import { Pagination } from '@/components/application/pagination'
+import { CreateTravelModal } from './create-travel-modal'
 
 interface TravelsTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -58,10 +57,7 @@ export function TravelsTable<TData, TValue>({
           className="max-w-sm bg-background"
         />
 
-        <Button className="ml-auto">
-          <CirclePlus className="size-4 mr-2" />
-          Criar Viagem
-        </Button>
+        <CreateTravelModal />
       </div>
 
       <div className="bg-card border rounded-md overflow-hidden">
