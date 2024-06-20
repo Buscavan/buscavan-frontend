@@ -30,6 +30,7 @@ export function RegisterForm() {
   })
 
   const onSubmit = async (data: RegisterFormSchema) => {
+    data.role = 'PASSANGER'
     await registerAuth(data)
   }
 

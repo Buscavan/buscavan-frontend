@@ -18,13 +18,18 @@ export function DeleteTravelModal({ travelId }: DeleteTravelModalProps) {
       <AlertDialogHeader>
         <AlertDialogTitle>Atenção!</AlertDialogTitle>
         <AlertDialogDescription>
-          Você tem certeza que deseja excluir está viagem?
+          Você realmente deseja excluir esta viagem? Esta ação é irreversível e
+          todos os dados relacionados a esta viagem serão permanentemente
+          perdidos.
         </AlertDialogDescription>
       </AlertDialogHeader>
       <AlertDialogFooter>
         <AlertDialogCancel>Cancelar</AlertDialogCancel>
-        <AlertDialogAction onClick={() => console.log(travelId)}>
-          Continuar
+        <AlertDialogAction
+          onClick={() => console.log(travelId)}
+          className="bg-red-800 text-white"
+        >
+          Deletar
         </AlertDialogAction>
       </AlertDialogFooter>
     </AlertDialogContent>

@@ -23,6 +23,7 @@ interface User {
   phone?: string
   email: string
   name: string
+  role: string
   cpf: string
   id: number
 }
@@ -32,6 +33,7 @@ interface RegisterResponse {
   expiresIn: Date | number
   id: number
   name: string
+  role: string
   email: string
   cpf: string
   password: string
@@ -46,6 +48,7 @@ interface LoginResponse {
     id: number
     cpf: string
     name: string
+    role: string
     email: string
     password?: string
     updatedAt?: string
@@ -123,13 +126,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
       const response = await api.post<LoginResponse>(endpoints.login, data)
       const {
         token,
-        user: { id, cpf, name, email, fotoCnhUrl, fotoPerfilUrl },
+        user: { id, cpf, name, email, fotoCnhUrl, fotoPerfilUrl, role },
       } = response.data
 
       Cookies.set('token', token, { expires: 7 })
       // Cookies.set('refreshToken', refreshToken, { expires: 14 })
 
-      setUser({ id, name, email, cpf, fotoCnhUrl, fotoPerfilUrl })
+      setUser({ id, name, email, cpf, fotoCnhUrl, fotoPerfilUrl, role })
 
       router.push('/app/search')
     } catch (error) {
@@ -149,12 +152,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
         data,
       )
       // console.log(response.data)
-      const { token, id, name, email, cpf } = response.data
+      const { token, id, name, email, cpf, role } = response.data
 
       Cookies.set('token', token, { expires: 7 })
       // Cookies.set('refreshToken', refreshToken, { expires: 14 })
 
-      setUser({ id, name, email, cpf })
+      setUser({ id, name, email, cpf, role })
 
       toast({
         title: 'Registro efetuado com sucesso!',

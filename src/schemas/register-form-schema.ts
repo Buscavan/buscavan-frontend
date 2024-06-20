@@ -13,6 +13,7 @@ export const registerFormSchema = z.object({
   password: z
     .string({ required_error: 'Por favor, informe sua senha' })
     .min(8, 'A senha deve ter pelo menos 8 caracteres'),
+  role: z.string().optional(),
 })
 
 export type RegisterFormSchema = z.infer<typeof registerFormSchema>

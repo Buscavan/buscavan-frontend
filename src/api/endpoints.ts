@@ -12,4 +12,5 @@ export const endpoints = {
   deleteVehicle: '/veiculo/{id}',
   updateVehicle: '/veiculo/{id}',
   uploadProfileImage: '/upload/user/perfil/{ìd}',
+  uploadCNHImage: '/upload/user/cnh/{ìd}',
 }

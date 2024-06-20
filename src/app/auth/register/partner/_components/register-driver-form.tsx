@@ -25,9 +25,11 @@ import {
 import { Dropzone } from '@/components/application/dropzone'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { WebcamCapture } from '@/components/application/webcam-capture'
+import { api } from '@/api/axios'
+import { endpoints } from '@/api/endpoints'
 
 export function RegisterDriverForm() {
-  const { register: registerAuth } = useAuth()
+  const { register: registerAuth, user } = useAuth()
   const [ocult, setOcult] = useState(false)
   const {
     register,
@@ -41,12 +43,42 @@ export function RegisterDriverForm() {
   })
 
   const onSubmit = async (data: RegisterFormSchema) => {
+    data.role = 'DRIVER'
     await registerAuth(data)
+
+    const userId = user?.id
+    if (!userId) return
+
+    if (cnhFiles.length > 0) {
+      await uploadImage(
+        cnhFiles[0],
+        endpoints.uploadCNHImage.replace('{id}', userId.toString()),
+      )
+    }
+
+    if (faceFiles.length > 0) {
+      await uploadImage(
+        faceFiles[0],
+        endpoints.uploadProfileImage.replace('{id}', userId.toString()),
+      )
+    }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const uploadImage = async (image: string, url: string) => {
+    const formData = new FormData()
+    const file = await fetch(image)
+      .then((res) => res.blob())
+      .then((blob) => new File([blob], 'image.jpg', { type: blob.type }))
+    formData.append('file', file)
+
+    await api.post(url, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+  }
+
   const [cnhFiles, setCnhFiles] = useState<string[]>([])
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [faceFiles, setFaceFiles] = useState<string[]>([])
   const [isCNHModalOpen, setIsCNHModalOpen] = useState(false)
   const [isFaceModalOpen, setIsFaceModalOpen] = useState(false)
