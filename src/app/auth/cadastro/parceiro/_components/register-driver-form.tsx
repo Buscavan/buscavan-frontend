@@ -110,17 +110,18 @@ export function RegisterDriverForm() {
       </fieldset>
 
       <div className="flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0">
-        <fieldset className="space-y-0.5">
+        <fieldset className="flex-1">
           <CPFInput
             name="cpf"
             register={register}
             errors={errors}
             setValue={setValue}
             getValues={getValues}
+            className="space-y-0.5"
           />
         </fieldset>
 
-        <fieldset className="space-y-0.5">
+        <fieldset className="flex-1 space-y-0.5">
           <Label htmlFor="password">Senha</Label>
           <div className="relative">
             <Input

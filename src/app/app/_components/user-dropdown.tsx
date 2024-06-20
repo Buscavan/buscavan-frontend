@@ -41,14 +41,14 @@ export function UserDropdown() {
         <DropdownMenuGroup>
           <DropdownMenuItem
             className="hover:cursor-pointer"
-            onClick={() => router.push('/app/settings')}
+            onClick={() => router.push('/app/configurações')}
           >
             <User className="size-4 mr-2" />
             Perfil
           </DropdownMenuItem>
           <DropdownMenuItem
             className="hover:cursor-pointer"
-            onClick={() => router.push('/app/about')}
+            onClick={() => router.push('/app/sobre')}
           >
             <Info className="size-4 mr-2" />
             Sobre

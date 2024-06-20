@@ -14,7 +14,7 @@ export function NavLink({ href, active, children }: NavLinkProps) {
       href={href}
       className={cn([
         'flex items-center text-sm px-3 py-2 rounded-md',
-        active && 'bg-secondary',
+        active && 'bg-secondary-foreground/10 dark:bg-secondary',
       ])}
     >
       {children}

@@ -25,7 +25,7 @@ export function MainHeader() {
     <Header>
       <HeaderContent>
         <HeaderContentNav>
-          <Logo path="/app/search" />
+          <Logo path="/app" />
 
           <Separator orientation="vertical" className="h-3.5" />
 
@@ -34,15 +34,15 @@ export function MainHeader() {
             Viagens
           </HeaderContentNavLink>
           <HeaderContentNavLink
-            path="/app/search"
-            active={isActive('/app/search')}
+            path="/app/explorar"
+            active={isActive('/app/explorar')}
           >
             <Search className="size-4 mr-2" />
             Explorar
           </HeaderContentNavLink>
           <HeaderContentNavLink
-            path="/app/settings"
-            active={isActive('/app/settings')}
+            path="/app/configuracoes"
+            active={isActive('/app/configuracoes')}
           >
             <User className="size-4 mr-2" />
             Perfil

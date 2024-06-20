@@ -27,7 +27,7 @@ export function InitialHeader() {
           </Button>
 
           <Button asChild>
-            <Link href="/auth/register">Cadastre-se já</Link>
+            <Link href="/auth/cadastro">Cadastre-se já</Link>
           </Button>
         </HeaderContentActions>
       </HeaderContent>

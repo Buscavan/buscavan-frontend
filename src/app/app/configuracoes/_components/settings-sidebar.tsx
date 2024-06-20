@@ -13,12 +13,15 @@ export function SettingsSidebar() {
   return (
     <aside>
       <nav className="flex flex-col">
-        <NavLink href="/app/settings" active={isActive('/app/settings')}>
+        <NavLink
+          href="/app/configuracoes"
+          active={isActive('/app/configuracoes')}
+        >
           Perfil
         </NavLink>
         <NavLink
-          href="/app/settings/driver"
-          active={isActive('/app/settings/driver')}
+          href="/app/configuracoes/motorista"
+          active={isActive('/app/configuracoes/motorista')}
         >
           Motorista
         </NavLink>

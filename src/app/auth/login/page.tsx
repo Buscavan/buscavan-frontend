@@ -59,13 +59,16 @@ export default function LoginPage() {
             </DialogHeader>
             <div className="flex justify-between items-center gap-2">
               <Button variant="outline" className="w-full" asChild>
-                <Link href="/auth/register/partner" className="mr-2 flex gap-2">
+                <Link
+                  href="/auth/cadastro/parceiro"
+                  className="mr-2 flex gap-2"
+                >
                   <BiBus />
                   <p>Motorista</p>
                 </Link>
               </Button>
               <Button variant="default" className="w-full" asChild>
-                <Link href="/auth/register" className="mr-2 flex gap-2">
+                <Link href="/auth/cadastro" className="mr-2 flex gap-2">
                   <LuBaggageClaim />
                   <p>Passageiro</p>
                 </Link>
