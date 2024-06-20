@@ -29,7 +29,7 @@ import { api } from '@/api/axios'
 import { endpoints } from '@/api/endpoints'
 
 export function RegisterDriverForm() {
-  const { register: registerAuth, user } = useAuth()
+  const { register: registerAuth } = useAuth()
   const [ocult, setOcult] = useState(false)
   const {
     register,
@@ -42,26 +42,29 @@ export function RegisterDriverForm() {
     mode: 'onChange',
   })
 
-  const onSubmit = async (data: RegisterFormSchema) => {
-    data.role = 'DRIVER'
-    await registerAuth(data)
+  const handleUploads = async (userCPF: string | undefined) => {
+    if (!userCPF) {
+      console.log('CPF não foi enviado, fotos não enviadas.')
+      return
+    }
 
-    const userId = user?.id
-    if (!userId) return
+    const cnhEndpoint = endpoints.uploadCNHImage.replace('{id}', userCPF)
+    const faceEndpoint = endpoints.uploadProfileImage.replace('{id}', userCPF)
 
     if (cnhFiles.length > 0) {
-      await uploadImage(
-        cnhFiles[0],
-        endpoints.uploadCNHImage.replace('{id}', userId.toString()),
-      )
+      console.log('upload cnh')
+      await uploadImage(cnhFiles[0], cnhEndpoint)
     }
 
     if (faceFiles.length > 0) {
-      await uploadImage(
-        faceFiles[0],
-        endpoints.uploadProfileImage.replace('{id}', userId.toString()),
-      )
+      console.log('upload face')
+      await uploadImage(faceFiles[0], faceEndpoint)
     }
+  }
+
+  const onSubmit = async (data: RegisterFormSchema) => {
+    data.role = 'DRIVER'
+    await registerAuth(data, handleUploads)
   }
 
   const uploadImage = async (image: string, url: string) => {
@@ -71,11 +74,13 @@ export function RegisterDriverForm() {
       .then((blob) => new File([blob], 'image.jpg', { type: blob.type }))
     formData.append('file', file)
 
-    await api.post(url, formData, {
+    const response = await api.post(url, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
     })
+
+    console.log(response)
   }
 
   const [cnhFiles, setCnhFiles] = useState<string[]>([])

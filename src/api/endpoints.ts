@@ -11,6 +11,6 @@ export const endpoints = {
   getVehicleByDriver: '/veiculo/{id_motorista}',
   deleteVehicle: '/veiculo/{id}',
   updateVehicle: '/veiculo/{id}',
-  uploadProfileImage: '/upload/user/perfil/{ìd}',
-  uploadCNHImage: '/upload/user/cnh/{ìd}',
+  uploadProfileImage: '/upload/user/perfil/{id}',
+  uploadCNHImage: '/upload/user/cnh/{id}',
 }
