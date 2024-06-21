@@ -1,3 +1,6 @@
+'use client'
+
+import React, { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import {
   DialogClose,
@@ -9,59 +12,96 @@ import {
 } from '@/components/ui/dialog'
 import { Label } from '@/components/ui/label'
 import { AlertCircle, Phone } from 'lucide-react'
+import { api } from '@/api/axios'
+import { endpoints } from '@/api/endpoints'
+import Image from 'next/image'
+import { Trip } from './trips-list'
 
 interface TravelDetailsModalProps {
   id: number
 }
 
-export function TravelDetailsModal({ id }: TravelDetailsModalProps) {
+const TravelDetailsModal: React.FC<TravelDetailsModalProps> = ({ id }) => {
+  const [trip, setTrip] = useState<Trip | null>(null)
+
+  useEffect(() => {
+    const fetchTrip = async () => {
+      try {
+        const response = await api.get<Trip>(
+          endpoints.getTrip.replace('{id}', id.toString()),
+        )
+        setTrip(response.data)
+      } catch (error) {
+        console.error('Error fetching trip:', error)
+      }
+    }
+
+    fetchTrip()
+  }, [id])
+
+  if (!trip) {
+    return (
+      <DialogContent className="max-w-2xl w-full">
+        <div className="flex justify-center items-center h-full">
+          <span>Loading...</span>
+        </div>
+      </DialogContent>
+    )
+  }
+
   return (
     <DialogContent className="max-w-2xl w-full">
       <DialogHeader>
-        <DialogTitle>Balneário Camboriú ( TESTE: {id} )</DialogTitle>
+        <DialogTitle>
+          {trip.localEmbarqueIda} to {trip.localEmbarqueVolta}
+        </DialogTitle>
         <DialogDescription>
           Veja abaixo todos os detalhes da viagem
         </DialogDescription>
       </DialogHeader>
 
       <div className="grid grid-cols-3 gap-x-2 gap-y-4">
-        {/* {url ? (
-          <Image
-            src={url}
-            width={1920}
-            height={1080}
-            alt="Imagem da Cidade"
-            className="col-span-full h-40 object-cover object-center rounded-md"
-          />
+        {trip.fotoDestinoUrl ? (
+          <div className="col-span-full h-40 relative">
+            <Image
+              src={trip.fotoDestinoUrl}
+              alt="Imagem da Cidade"
+              layout="fill"
+              objectFit="cover"
+              className="rounded-md"
+            />
+          </div>
         ) : (
           <div className="col-span-full h-40 flex justify-center items-center bg-muted rounded-md text-muted-foreground">
             <AlertCircle className="size-5 mr-2" />
             <span className="text-sm">Sem foto</span>
           </div>
-        )} */}
-        <div className="col-span-full h-40 flex justify-center items-center bg-muted rounded-md text-muted-foreground">
-          <AlertCircle className="size-5 mr-2" />
-          <span className="text-sm">Sem foto</span>
-        </div>
+        )}
 
         <div className="col-span-1 space-y-0.5">
           <Label>Local de Saída</Label>
-          <p className="text-sm text-muted-foreground">Em frente ao Sesi</p>
+          <p className="text-sm text-muted-foreground">
+            {trip.localEmbarqueIda}
+          </p>
         </div>
 
         <div className="col-span-1 space-y-0.5">
           <Label>Data</Label>
-          <p className="text-sm text-muted-foreground">16/06/2024</p>
+          <p className="text-sm text-muted-foreground">
+            {new Date(trip.dataInicial).toLocaleDateString('pt-BR')}
+          </p>
         </div>
 
         <div className="col-span-1 space-y-0.5">
           <Label>Valor</Label>
-          <p className="text-sm text-muted-foreground">R$ 1.000,00</p>
+          <p className="text-sm text-muted-foreground">
+            R$ {trip.valor.toFixed(2)}
+          </p>
         </div>
 
         <div className="col-span-1 space-y-0.5">
           <Label>Veículo</Label>
-          <p className="text-sm text-muted-foreground">Mercedes Sprinter</p>
+          <p className="text-sm text-muted-foreground">{trip.veiculoId}</p>
         </div>
 
         <div className="col-span-1 space-y-0.5">
@@ -71,17 +111,13 @@ export function TravelDetailsModal({ id }: TravelDetailsModalProps) {
 
         <div className="col-span-1 space-y-0.5">
           <Label>Passageiros</Label>
-          <p className="text-sm text-muted-foreground">14</p>
+          <p className="text-sm text-muted-foreground">{trip.passageiros}</p>
         </div>
 
         <div className="col-span-full space-y-0.5">
           <Label>Descrição</Label>
           <p className="text-sm text-muted-foreground text-justify">
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Magnam
-            autem libero optio est et consequatur, totam culpa! Impedit, rem
-            voluptatum. Lorem ipsum, dolor sit amet consectetur adipisicing
-            elit. Magnam autem libero optio est et consequatur, totam culpa!
-            Impedit, rem voluptatum.
+            {trip.descricao}
           </p>
         </div>
       </div>
@@ -98,3 +134,5 @@ export function TravelDetailsModal({ id }: TravelDetailsModalProps) {
     </DialogContent>
   )
 }
+
+export default TravelDetailsModal

@@ -19,7 +19,7 @@ import {
 } from '@/components/ui/table'
 import { Input } from '@/components/ui/input'
 import { useState } from 'react'
-import { Pagination } from '@/components/application/pagination'
+import { TablePagination } from '@/components/application/table-pagination'
 import { CreateTravelModal } from './create-travel-modal'
 
 interface TravelsTableProps<TData, TValue> {
@@ -108,7 +108,7 @@ export function TravelsTable<TData, TValue>({
         </Table>
       </div>
 
-      <Pagination property={table} />
+      <TablePagination property={table} />
     </div>
   )
 }

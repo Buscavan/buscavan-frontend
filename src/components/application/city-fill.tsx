@@ -1,7 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+import React, { useState, useEffect, useCallback } from 'react'
 import { Controller, Control, FieldValues, Path } from 'react-hook-form'
 import { Check, ChevronsUpDown } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -12,22 +11,30 @@ import {
   CommandGroup,
   CommandInput,
   CommandItem,
+  CommandList,
 } from '@/components/ui/command'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
+import { api } from '@/api/axios'
+import debounce from 'lodash.debounce'
+import { endpoints } from '@/api/endpoints'
+
+interface State {
+  id: number
+  nome: string
+  uf: string
+}
 
 interface City {
+  id: number
   nome: string
-  microrregiao: {
-    mesorregiao: {
-      UF: {
-        sigla: string
-      }
-    }
-  }
+  uf: number
+  ibge: number
+  lat_lon: string
+  cod_tom: number
 }
 
 interface CityFillProps<TFieldValues extends FieldValues = FieldValues> {
@@ -38,51 +45,90 @@ interface CityFillProps<TFieldValues extends FieldValues = FieldValues> {
 interface FillProps {
   value: string
   label: string
+  stateId: number
 }
 
 export function CityFill<TFieldValues extends FieldValues>({
   control,
   name,
 }: CityFillProps<TFieldValues>) {
-  const [cities, setCities] = useState<FillProps[]>([])
-  const [search, setSearch] = useState('')
+  const [states, setStates] = useState<State[]>([])
+  const [cityStateList, setCityStateList] = useState<FillProps[]>([])
+  const [, setSearch] = useState('')
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    if (search.length >= 2) {
-      fetchCities(search)
-    } else {
-      setCities([])
-    }
-  }, [search])
+    fetchStates()
+    fetchCities()
+  }, [])
 
-  const fetchCities = async (searchTerm: string) => {
+  const fetchStates = async () => {
     try {
-      const statesResponse = await axios.get(
-        'https://brasilapi.com.br/api/ibge/uf/v1',
-      )
-      const states: State[] = statesResponse.data
+      const response = await api.get(endpoints.listStates) // Adjust the endpoint as needed
+      const statesData: State[] = response.data
 
-      const cityPromises = states.map(async (state: State) => {
-        const response = await axios.get(
-          `https://brasilapi.com.br/api/ibge/municipios/v1/${state.sigla}`,
-        )
-        const data: City[] = response.data
-        return data
-          .filter((city) =>
-            city.nome.toLowerCase().includes(searchTerm.toLowerCase()),
-          )
-          .map((city) => ({
-            value: `${city.nome}${city.microrregiao.mesorregiao.UF.sigla}`,
-            label: `${city.nome}, ${city.microrregiao.mesorregiao.UF.sigla}`,
-          }))
+      if (!Array.isArray(statesData)) {
+        console.error('Invalid states data structure:', statesData)
+        return
+      }
+
+      setStates(statesData)
+    } catch (error) {
+      console.error('Error fetching states:', error)
+    }
+  }
+
+  const fetchCities = async (query = '') => {
+    setLoading(true)
+    try {
+      const response = await api.get(
+        `${endpoints.searchCity}${query ? '?query=' + query : ''}`,
+      )
+      const cities: City[] = response.data
+
+      if (!Array.isArray(cities)) {
+        console.error('Invalid cities data structure:', cities)
+        setLoading(false)
+        return
+      }
+
+      const formattedCities = cities.map((city) => {
+        const state = states.find((state) => state.id === city.uf)
+        return {
+          value: city.id.toString(),
+          label: `${city.nome}, ${state?.uf}`,
+          stateId: city.uf,
+        }
       })
 
-      const citiesData = await Promise.all(cityPromises)
-      const flattenedCities = citiesData.flat()
-      setCities(flattenedCities)
+      setCityStateList(formattedCities)
+      setLoading(false)
     } catch (error) {
       console.error('Error fetching cities:', error)
+      setLoading(false)
     }
+  }
+
+  const debouncedFetchCities = useCallback(
+    debounce((query: string) => {
+      fetchCities(query)
+    }, 1000),
+    [states],
+  )
+
+  const handleSearchChange = (value: string) => {
+    setSearch(value)
+    debouncedFetchCities(value)
+  }
+
+  const handleSelect = (
+    cityState: FillProps,
+    onChange: (value: string) => void,
+  ) => {
+    onChange(cityState.value)
+    // Set both stateId and cityId
+    console.log('Selected State ID:', cityState.stateId)
+    console.log('Selected City ID:', cityState.value)
   }
 
   return (
@@ -90,50 +136,58 @@ export function CityFill<TFieldValues extends FieldValues>({
       control={control}
       name={name}
       render={({ field: { onChange, value } }) => (
-        <Popover onOpenChange={(open) => open}>
-          <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              role="combobox"
-              className="w-full flex items-center justify-between"
-            >
-              {value
-                ? cities.find((city) => city.value === value)?.label
-                : 'Selecione uma cidade...'}
-              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-[--radix-popover-trigger-width] max-h-[--radix-popover-content-available-height] p-0">
-            <Command>
-              <CommandInput
-                placeholder="Selecione uma cidade..."
-                onValueChange={setSearch}
-              />
-              <CommandEmpty>Nenhuma cidade foi encontrada.</CommandEmpty>
-              {cities && cities.length > 0 && (
-                <CommandGroup>
-                  {cities.map((city: FillProps) => (
-                    <CommandItem
-                      key={city.value}
-                      value={city.value}
-                      onSelect={() => {
-                        onChange(city.value === value ? '' : city.value)
-                      }}
-                    >
-                      <Check
-                        className={cn(
-                          'mr-2 h-4 w-4',
-                          value === city.value ? 'opacity-100' : 'opacity-0',
-                        )}
-                      />
-                      {city.label}
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              )}
-            </Command>
-          </PopoverContent>
-        </Popover>
+        <>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                role="combobox"
+                className="w-full flex items-center justify-between"
+              >
+                {value
+                  ? cityStateList.find((item) => item.value === value)?.label ||
+                    'Selecione uma cidade...'
+                  : 'Selecione uma cidade...'}
+                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[--radix-popover-trigger-width] max-h-[--radix-popover-content-available-height] p-0">
+              <Command>
+                <CommandInput
+                  placeholder="Selecione uma cidade..."
+                  onValueChange={handleSearchChange}
+                />
+                <CommandList>
+                  {loading ? (
+                    <CommandEmpty>Carregando...</CommandEmpty>
+                  ) : cityStateList.length === 0 ? (
+                    <CommandEmpty>Nenhuma cidade foi encontrada.</CommandEmpty>
+                  ) : (
+                    <CommandGroup>
+                      {cityStateList.map((item) => (
+                        <CommandItem
+                          key={item.value}
+                          value={item.value}
+                          onSelect={() => handleSelect(item, onChange)}
+                        >
+                          <Check
+                            className={cn(
+                              'mr-2 h-4 w-4',
+                              value === item.value
+                                ? 'opacity-100'
+                                : 'opacity-0',
+                            )}
+                          />
+                          {item.label}
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  )}
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
+        </>
       )}
     />
   )
