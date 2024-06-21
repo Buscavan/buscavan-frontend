@@ -96,7 +96,7 @@ export function CreateTravelModal() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="ml-auto">
+        <Button>
           <CirclePlus className="size-4 mr-2" />
           Criar Viagem
         </Button>

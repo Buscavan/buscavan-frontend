@@ -54,10 +54,12 @@ export function TravelsTable<TData, TValue>({
           onChange={(event) =>
             table.getColumn('destiny')?.setFilterValue(event.target.value)
           }
-          className="max-w-sm bg-background"
+          className="max-w-sm w-full bg-background"
         />
 
-        <CreateTravelModal />
+        <div className="ml-auto">
+          <CreateTravelModal />
+        </div>
       </div>
 
       <div className="bg-card border rounded-md overflow-hidden">

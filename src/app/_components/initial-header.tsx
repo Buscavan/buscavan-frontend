@@ -30,9 +30,7 @@ export function InitialHeader() {
 
           <Dialog>
             <DialogTrigger asChild>
-              <Button asChild>
-                <Link href="/auth/cadastro">Cadastre-se já</Link>
-              </Button>
+              <Button>Cadastre-se já</Button>
             </DialogTrigger>
             <RegisterOptionModal />
           </Dialog>

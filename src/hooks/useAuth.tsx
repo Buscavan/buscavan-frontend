@@ -132,7 +132,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
 
       setUser({ name, email, cpf, fotoCnhUrl, fotoPerfilUrl, role })
 
-      router.push('/app/search')
+      router.push('/app')
     } catch (error) {
       toast({
         title: 'Login falhou',
@@ -168,7 +168,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
         callback(cpf)
       }
 
-      router.push('/app/search')
+      router.push('/apps')
     } catch (error) {
       toast({
         title: 'Falha no registro',

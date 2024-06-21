@@ -22,7 +22,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { Pagination } from '@/components/application/pagination'
+import { TablePagination } from '@/components/application/table-pagination'
 
 interface VehicleTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -102,7 +102,7 @@ export function VehicleTable<TData, TValue>({
             </Table>
           </div>
 
-          <Pagination property={table} />
+          <TablePagination property={table} />
         </div>
       </CardContent>
     </Card>
