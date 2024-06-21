@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
+import Link from 'next/link'
 
 export function AdBanner() {
   const [opacity, setOpacity] = useState(1)
@@ -36,8 +37,13 @@ export function AdBanner() {
           Anuncie em nossa plataforma e entre pro time da Buscavan!
         </p>
         <div className="flex-1 flex justify-end items-center h-full">
-          <Button size="sm" variant="secondary" disabled={opacity <= 0.5}>
-            Cadastrar Veículos
+          <Button
+            size="sm"
+            variant="secondary"
+            disabled={opacity <= 0.5}
+            asChild
+          >
+            <Link href="/auth/cadastro/motorista">Cadastrar Veículos</Link>
           </Button>
         </div>
       </div>

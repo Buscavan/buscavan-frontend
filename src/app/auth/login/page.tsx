@@ -1,17 +1,8 @@
 import { Button } from '@/components/ui/button'
 import { LoginForm } from './_components/login-form'
 import { Separator } from '@/components/ui/separator'
-import Link from 'next/link'
-import {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogTitle,
-  DialogHeader,
-  DialogDescription,
-} from '@/components/ui/dialog'
-import { LuBaggageClaim } from 'react-icons/lu'
-import { BiBus } from 'react-icons/bi'
+import { Dialog, DialogTrigger } from '@/components/ui/dialog'
+import { RegisterOptionModal } from '@/app/_components/register-option-modal'
 
 export const metadata = {
   title: 'Login',
@@ -50,31 +41,7 @@ export default function LoginPage() {
               <p>Cadastre-se em nossa plataforma</p>
             </Button>
           </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Você é?</DialogTitle>
-              <DialogDescription>
-                Escolha como prosseguir com o cadastro
-              </DialogDescription>
-            </DialogHeader>
-            <div className="flex justify-between items-center gap-2">
-              <Button variant="outline" className="w-full" asChild>
-                <Link
-                  href="/auth/cadastro/parceiro"
-                  className="mr-2 flex gap-2"
-                >
-                  <BiBus />
-                  <p>Motorista</p>
-                </Link>
-              </Button>
-              <Button variant="default" className="w-full" asChild>
-                <Link href="/auth/cadastro" className="mr-2 flex gap-2">
-                  <LuBaggageClaim />
-                  <p>Passageiro</p>
-                </Link>
-              </Button>
-            </div>
-          </DialogContent>
+          <RegisterOptionModal />
         </Dialog>
       </div>
     </section>

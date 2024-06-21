@@ -9,7 +9,9 @@ import {
 import { Logo } from '@/components/application/logo'
 import { ModeToggle } from '@/components/application/mode-toggle'
 import { Button } from '@/components/ui/button'
+import { Dialog, DialogTrigger } from '@/components/ui/dialog'
 import Link from 'next/link'
+import { RegisterOptionModal } from './register-option-modal'
 
 export function InitialHeader() {
   return (
@@ -26,9 +28,14 @@ export function InitialHeader() {
             <Link href="/auth/login">Faça login</Link>
           </Button>
 
-          <Button asChild>
-            <Link href="/auth/cadastro">Cadastre-se já</Link>
-          </Button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button asChild>
+                <Link href="/auth/cadastro">Cadastre-se já</Link>
+              </Button>
+            </DialogTrigger>
+            <RegisterOptionModal />
+          </Dialog>
         </HeaderContentActions>
       </HeaderContent>
     </Header>
