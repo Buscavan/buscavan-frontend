@@ -11,7 +11,6 @@ import React, {
   SetStateAction,
 } from 'react'
 import Cookies from 'js-cookie'
-import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import { useToast } from '@/components/ui/use-toast'
 import { api } from '@/api/axios'
@@ -29,6 +28,7 @@ interface User {
 
 interface RegisterResponse {
   token: string
+  refreshToken: string
   expiresIn: Date | number
   name: string
   role: string
@@ -41,6 +41,7 @@ interface RegisterResponse {
 
 interface LoginResponse {
   token: string
+  refreshToken: string
   expiresIn: Date | number
   user: {
     cpf: string
@@ -94,23 +95,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
 
   const validateToken = async (refreshTokenToValidate: string) => {
     try {
-      const response = await axios.post<{
+      const response = await api.post<{
         user: User
-        token: string
-        refresh_token: string
-      }>(`${process.env.API_ENDPOINT}${endpoints.validateRefreshToken}`, {
+        accessToken: string
+        refreshToken: string
+      }>(endpoints.validateRefreshToken, {
         refreshToken: refreshTokenToValidate,
       })
 
-      const { token, refresh_token: refreshToken, user } = response.data
+      const { refreshToken, user } = response.data
 
-      Cookies.set('token', token, { expires: 7 })
+      // console.log(accessToken)
+      // Cookies.set('token', accessToken, { expires: 7 })
       Cookies.set('refreshToken', refreshToken, { expires: 14 })
       setUser(user)
     } catch (error) {
-      Cookies.remove('token')
-      Cookies.remove('refreshToken')
-      setUser(null)
+      // Cookies.remove('token')
+      // Cookies.remove('refreshToken')
+      // setUser(null)
     }
   }
 
@@ -124,11 +126,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
       const response = await api.post<LoginResponse>(endpoints.login, data)
       const {
         token,
+        refreshToken,
+        expiresIn,
         user: { cpf, name, email, fotoCnhUrl, fotoPerfilUrl, role },
       } = response.data
 
-      Cookies.set('token', token, { expires: 7 })
-      // Cookies.set('refreshToken', refreshToken, { expires: 14 })
+      Cookies.set('token', token, { expires: expiresIn })
+      Cookies.set('refreshToken', refreshToken, { expires: 14 })
 
       setUser({ name, email, cpf, fotoCnhUrl, fotoPerfilUrl, role })
 
@@ -152,10 +156,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
         endpoints.registerUser,
         data,
       )
-      const { token, name, email, cpf, role } = response.data
+      const { token, name, expiresIn, refreshToken, email, cpf, role } =
+        response.data
 
-      Cookies.set('token', token, { expires: 7 })
-      // Cookies.set('refreshToken', refreshToken, { expires: 14 })
+      Cookies.set('token', token, { expires: expiresIn })
+      Cookies.set('refreshToken', refreshToken, { expires: expiresIn })
 
       setUser({ name, email, cpf, role })
 
@@ -168,7 +173,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
         callback(cpf)
       }
 
-      router.push('/apps')
+      router.push('/app')
     } catch (error) {
       toast({
         title: 'Falha no registro',

@@ -1,3 +1,4 @@
+import React from 'react'
 import {
   AlertDialogContent,
   AlertDialogDescription,
@@ -7,12 +8,33 @@ import {
   AlertDialogCancel,
   AlertDialogAction,
 } from '@/components/ui/alert-dialog'
+import { useToast } from '@/components/ui/use-toast'
+import { api } from '@/api/axios'
+import { endpoints } from '@/api/endpoints'
 
 interface DeleteTravelModalProps {
   travelId: string
 }
 
 export function DeleteTravelModal({ travelId }: DeleteTravelModalProps) {
+  const { toast } = useToast()
+
+  const handleDelete = async () => {
+    try {
+      await api.delete(endpoints.deleteTrip.replace('{id}', travelId))
+      toast({
+        title: 'Viagem Excluída',
+        description: 'A viagem foi excluída com sucesso.',
+      })
+    } catch (error) {
+      console.error('Error deleting trip:', error)
+      toast({
+        title: 'Erro!',
+        description: 'Houve um erro ao excluir a viagem. Tente novamente.',
+      })
+    }
+  }
+
   return (
     <AlertDialogContent>
       <AlertDialogHeader>
@@ -26,7 +48,7 @@ export function DeleteTravelModal({ travelId }: DeleteTravelModalProps) {
       <AlertDialogFooter>
         <AlertDialogCancel>Cancelar</AlertDialogCancel>
         <AlertDialogAction
-          onClick={() => console.log(travelId)}
+          onClick={handleDelete}
           className="bg-red-800 text-white"
         >
           Deletar

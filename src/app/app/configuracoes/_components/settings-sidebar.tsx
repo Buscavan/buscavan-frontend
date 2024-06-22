@@ -2,9 +2,11 @@
 
 import { usePathname } from 'next/navigation'
 import { NavLink } from './nav-link'
+import { useAuth } from '@/hooks/useAuth'
 
 export function SettingsSidebar() {
   const pathname = usePathname()
+  const { user } = useAuth()
 
   const isActive = (path: string) => {
     return pathname === path
@@ -19,12 +21,14 @@ export function SettingsSidebar() {
         >
           Perfil
         </NavLink>
-        <NavLink
-          href="/app/configuracoes/motorista"
-          active={isActive('/app/configuracoes/motorista')}
-        >
-          Motorista
-        </NavLink>
+        {user && user.role && user.role === 'DRIVER' && (
+          <NavLink
+            href="/app/configuracoes/motorista"
+            active={isActive('/app/configuracoes/motorista')}
+          >
+            Motorista
+          </NavLink>
+        )}
       </nav>
     </aside>
   )

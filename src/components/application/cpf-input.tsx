@@ -24,6 +24,7 @@ function formatCPF(value: string): string {
 interface CPFInputProps<T extends FieldValues> {
   register: UseFormRegister<T>
   name: Path<T>
+  defaultValue?: string
   errors: FieldErrors<T>
   setValue: UseFormSetValue<T>
   getValues: UseFormGetValues<T>
@@ -37,10 +38,11 @@ export function CPFInput<T extends FieldValues>({
   errors,
   setValue,
   getValues,
+  defaultValue,
   className,
   disabled,
 }: CPFInputProps<T>) {
-  const [value, setValueState] = useState<string>('')
+  const [value, setValueState] = useState<string>(defaultValue || '')
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const formattedValue = formatCPF(event.target.value)

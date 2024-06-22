@@ -35,6 +35,35 @@ export interface Trip {
   veiculoId: number
   usuarioId: string
   passageiros: number
+  veiculo: {
+    id: number
+    modelo: string
+    placa: string
+    capacidade: number
+    fotoVeiculoUrl: string
+    createdAt: string
+    updatedAt: string
+    motoristaCPF: string
+    motorista: {
+      phone: string | null
+    }
+  }
+  origem: {
+    id: number
+    nome: string
+    uf: number
+    ibge: number
+    lat_lon: string
+    cod_tom: number
+  }
+  destino: {
+    id: number
+    nome: string
+    uf: number
+    ibge: number
+    lat_lon: string
+    cod_tom: number
+  }
 }
 
 const TripsList: React.FC = () => {
@@ -46,11 +75,11 @@ const TripsList: React.FC = () => {
   useEffect(() => {
     const fetchTrips = async () => {
       try {
-        const response = await api.get<{ trips: Trip[]; total: number }>(
+        const response = await api.get<Trip[]>(
           `${endpoints.listTrips}?page=${currentPage}&pageSize=${pageSize}`,
         )
-        setTrips(response.data.trips)
-        setTotalPages(Math.ceil(response.data.total / pageSize))
+        setTrips(response.data)
+        setTotalPages(Math.ceil(response.data.length / pageSize))
       } catch (error) {
         console.error('Error fetching trips:', error)
       }
@@ -76,7 +105,7 @@ const TripsList: React.FC = () => {
                     <TravelCardContent>
                       <TravelCardHeader>
                         <TravelCardTitle>
-                          {trip.localEmbarqueIda} to {trip.localEmbarqueVolta}
+                          {trip.origem.nome} to {trip.destino.nome}
                         </TravelCardTitle>
                         <TravelCardPrice>
                           R$ {trip.valor.toFixed(2)}

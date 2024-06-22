@@ -1,3 +1,6 @@
+'use client'
+
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -20,38 +23,15 @@ import {
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { CirclePlus, Loader2 } from 'lucide-react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
+import { useForm, FormProvider } from 'react-hook-form'
 import { useToast } from '@/components/ui/use-toast'
 import { DatePicker } from '@/components/application/date-picker'
-import ErrorLabel from '@/components/application/error-label'
-
-const createTravelSchema = z.object({
-  destiny: z.string({
-    required_error: 'Por favor, informe a cidade de destino',
-  }),
-  type: z.string({ required_error: 'Por favor, selecione o tipo' }),
-  value: z.coerce.number(),
-  boardingPlace: z.string({
-    required_error: 'Por favor, informe o local de embarque',
-  }),
-  landingPlace: z.string({
-    required_error: 'Por favor, informe o local de desembarque',
-  }),
-  initialDate: z.date().refine((val) => val !== null, {
-    message: 'Por favor, selecione a data de início',
-  }),
-  endDate: z.date().refine((val) => val !== null, {
-    message: 'Por favor, selecione a data de término',
-  }),
-  vehicle: z.string(),
-  plate: z.string(),
-  passengers: z.coerce.number(),
-  description: z.string().optional(),
-})
-
-type CreateTravelSubmit = z.infer<typeof createTravelSchema>
+import { VehicleFill } from '@/components/application/vehicle-fill'
+import { CityFill } from '@/components/application/city-fill'
+import { useAuth } from '@/hooks/useAuth'
+import Image from 'next/image'
+import { api } from '@/api/axios'
+import { endpoints } from '@/api/endpoints'
 
 const getRandomFutureDate = (daysMin: number, daysMax: number) => {
   const today = new Date()
@@ -63,7 +43,23 @@ const getRandomFutureDate = (daysMin: number, daysMax: number) => {
 
 export function CreateTravelModal() {
   const { toast } = useToast()
+  const { user } = useAuth()
+  const [imageSrc, setImageSrc] = useState<string | null>(null)
+  const [imageFile, setImageFile] = useState<File | null>(null)
+
   const today = new Date()
+
+  const methods = useForm({
+    mode: 'onChange',
+    defaultValues: {
+      origin: '',
+      destiny: '',
+      initialDate: today,
+      endDate: getRandomFutureDate(10, 20),
+      description: '',
+      tripImage: '',
+    },
+  })
 
   const {
     control,
@@ -71,26 +67,61 @@ export function CreateTravelModal() {
     setValue,
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<CreateTravelSubmit>({
-    resolver: zodResolver(createTravelSchema),
-    defaultValues: {
-      destiny: '',
-      initialDate: today,
-      endDate: getRandomFutureDate(10, 20),
-      description: '',
-    },
-  })
+    formState: { isSubmitting },
+  } = methods
 
-  async function onSubmit(data: CreateTravelSubmit) {
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setImageSrc(reader.result as string)
+        setImageFile(file)
+        setValue('tripImage', reader.result as string)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
 
+  async function onSubmit(data) {
     console.log(data)
+    const formData = new FormData()
 
-    toast({
-      title: 'Viagem Criada!',
-      description: 'Verifique na tela anterior todas as suas viagens.',
-    })
+    const tripData = {
+      origemId: data.origin,
+      destinoId: data.destiny,
+      dataInicial: data.initialDate.toISOString(),
+      dataFinal: data.endDate.toISOString(),
+      valor: data.value,
+      localEmbarqueIda: data.boardingPlace,
+      localEmbarqueVolta: data.landingPlace,
+      descricao: data.description,
+      fotoDestinoUrl: data.tripImage,
+      veiculoId: data.vehicle,
+    }
+
+    formData.append('dtoString', JSON.stringify(tripData))
+
+    if (imageFile) {
+      formData.append('file', imageFile)
+    }
+
+    try {
+      await api.post(endpoints.createTrip, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
+
+      toast({
+        title: 'Viagem Criada!',
+        description: 'Verifique na tela anterior todas as suas viagens.',
+      })
+    } catch (error) {
+      console.error('Error creating trip:', error)
+      toast({
+        title: 'Erro!',
+        description: 'Houve um erro ao criar a viagem.',
+      })
+    }
   }
 
   return (
@@ -101,142 +132,170 @@ export function CreateTravelModal() {
           Criar Viagem
         </Button>
       </DialogTrigger>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <DialogContent className="max-w-5xl w-full">
-          <DialogHeader>
-            <DialogTitle>Nova Viagem</DialogTitle>
-            <DialogDescription>
-              Preencha os dados abaixo para criar uma nova viagem
-            </DialogDescription>
-          </DialogHeader>
+      <FormProvider {...methods}>
+        <form>
+          <DialogContent className="max-w-5xl w-full">
+            <DialogHeader>
+              <DialogTitle>Nova Viagem</DialogTitle>
+              <DialogDescription>
+                Preencha os dados abaixo para criar uma nova viagem
+              </DialogDescription>
+            </DialogHeader>
 
-          <div className="grid grid-cols-4 gap-x-2 gap-y-4">
-            {/* FOTO DA VIAGEM */}
-            <div className="h-60 col-span-full bg-zinc-200" />
-
-            <fieldset className="col-span-2 space-y-0.5">
-              <Label>Destino</Label>
-              <Input placeholder="Digite uma cidade" {...register('destiny')} />
-              {errors.destiny && (
-                <ErrorLabel>{errors.destiny.message}</ErrorLabel>
-              )}
-            </fieldset>
-
-            <fieldset className="col-span-1 space-y-0.5">
-              <Label>Tipo</Label>
-              <Select onValueChange={(value) => setValue('type', value)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecionar..." />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="roundTrip">Ida e Volta</SelectItem>
-                  <SelectItem value="going">Ida</SelectItem>
-                </SelectContent>
-              </Select>
-              {errors.type && <ErrorLabel>{errors.type.message}</ErrorLabel>}
-            </fieldset>
-
-            <fieldset className="col-span-1 space-y-0.5">
-              <Label>Valor (R$)</Label>
-              <Input placeholder="Digite um valor" {...register('value')} />
-              {errors.value && <ErrorLabel>{errors.value.message}</ErrorLabel>}
-            </fieldset>
-
-            <fieldset className="col-span-1 space-y-0.5">
-              <Label>Local Embarque Ida</Label>
-              <Input
-                placeholder="Digite o local de embarque"
-                {...register('boardingPlace')}
-              />
-              {errors.boardingPlace && (
-                <ErrorLabel>{errors.boardingPlace.message}</ErrorLabel>
-              )}
-            </fieldset>
-
-            <fieldset className="col-span-1 space-y-0.5">
-              <Label>Local Desembarque Volta</Label>
-              <Input
-                placeholder="Digite o local de desembarque"
-                {...register('landingPlace')}
-              />
-              {errors.landingPlace && (
-                <ErrorLabel>{errors.landingPlace.message}</ErrorLabel>
-              )}
-            </fieldset>
-
-            <fieldset className="col-span-1 space-y-0.5">
-              <Label>Data Ida</Label>
-              <DatePicker
-                control={control}
-                name="initialDate"
-                minDate={today.toISOString().substring(0, 10)}
-              />
-            </fieldset>
-
-            <fieldset className="col-span-1 space-y-0.5">
-              <Label>Data Volta</Label>
-              <DatePicker
-                control={control}
-                name="endDate"
-                minDate={watch('endDate')}
-              />
-            </fieldset>
-
-            <div className="col-span-full grid grid-cols-3 gap-x-2">
-              <fieldset className="col-span-1 space-y-0.5">
-                <Label>Veículo</Label>
-                <Input
-                  placeholder="Digite uma cidade"
-                  {...register('vehicle')}
-                />
-                {errors.vehicle && (
-                  <ErrorLabel>{errors.vehicle.message}</ErrorLabel>
+            <div className="grid grid-cols-4 gap-x-2 gap-y-4">
+              {/* FOTO DA VIAGEM */}
+              <div className="h-60 col-span-full bg-zinc-200 relative">
+                {imageSrc ? (
+                  <Image
+                    src={imageSrc}
+                    alt="Trip Image"
+                    layout="fill"
+                    objectFit="cover"
+                  />
+                ) : (
+                  <div className="h-full flex items-center justify-center text-gray-500">
+                    Nenhuma imagem selecionada
+                  </div>
                 )}
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="absolute inset-0 opacity-0 cursor-pointer"
+                />
+              </div>
+
+              <fieldset className="col-span-2 space-y-0.5">
+                <Label>Origem</Label>
+                <CityFill
+                  control={control}
+                  setValue={setValue}
+                  name="origin"
+                  cityKey="origin"
+                />
+              </fieldset>
+
+              <fieldset className="col-span-2 space-y-0.5">
+                <Label>Destino</Label>
+                <CityFill
+                  control={control}
+                  setValue={setValue}
+                  name="destiny"
+                  cityKey="destiny"
+                />
               </fieldset>
 
               <fieldset className="col-span-1 space-y-0.5">
-                <Label>Placa</Label>
-                <Input placeholder="Digite uma cidade" {...register('plate')} />
-                {errors.plate && (
-                  <ErrorLabel>{errors.plate.message}</ErrorLabel>
-                )}
+                <Label>Tipo</Label>
+                <Select onValueChange={(value) => setValue('type', value)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecionar..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="roundTrip">Ida e Volta</SelectItem>
+                    <SelectItem value="going">Ida</SelectItem>
+                  </SelectContent>
+                </Select>
               </fieldset>
 
               <fieldset className="col-span-1 space-y-0.5">
-                <Label>Passageiros</Label>
+                <Label>Valor (R$)</Label>
+                <Input placeholder="Digite um valor" {...register('value')} />
+              </fieldset>
+
+              <fieldset className="col-span-1 space-y-0.5">
+                <Label>Local Embarque Ida</Label>
                 <Input
-                  placeholder="Digite uma cidade"
-                  {...register('passengers')}
+                  placeholder="Digite o local de embarque"
+                  {...register('boardingPlace')}
                 />
-                {errors.passengers && (
-                  <ErrorLabel>{errors.passengers.message}</ErrorLabel>
-                )}
+              </fieldset>
+
+              <fieldset className="col-span-1 space-y-0.5">
+                <Label>Local Desembarque Volta</Label>
+                <Input
+                  placeholder="Digite o local de desembarque"
+                  {...register('landingPlace')}
+                />
+              </fieldset>
+
+              <div className="col-span-full grid grid-cols-2 gap-x-2">
+                <fieldset className="col-span-1 space-y-0.5">
+                  <Label>Data Ida</Label>
+                  <DatePicker
+                    control={control}
+                    name="initialDate"
+                    minDate={today.toISOString().substring(0, 10)}
+                  />
+                </fieldset>
+
+                <fieldset className="col-span-1 space-y-0.5">
+                  <Label>Data Volta</Label>
+                  <DatePicker
+                    control={control}
+                    name="endDate"
+                    minDate={watch('endDate')}
+                  />
+                </fieldset>
+              </div>
+
+              <div className="col-span-full grid grid-cols-3 gap-x-2">
+                <fieldset className="col-span-1 space-y-0.5">
+                  <Label>Veículo</Label>
+                  <VehicleFill
+                    control={control}
+                    name="vehicle"
+                    setValue={setValue as any}
+                    userId={user?.cpf ? user.cpf : ''}
+                  />
+                </fieldset>
+
+                <fieldset className="col-span-1 space-y-0.5">
+                  <Label>Placa</Label>
+                  <Input
+                    placeholder="Digite uma cidade"
+                    {...register('plate')}
+                    disabled
+                  />
+                </fieldset>
+
+                <fieldset className="col-span-1 space-y-0.5">
+                  <Label>Passageiros</Label>
+                  <Input
+                    placeholder="Digite uma cidade"
+                    {...register('passengers')}
+                    disabled
+                  />
+                </fieldset>
+              </div>
+
+              <fieldset className="col-span-full space-y-0.5">
+                <Label>Descrição</Label>
+                <Textarea
+                  className="min-h-20 resize-none"
+                  {...register('description')}
+                />
               </fieldset>
             </div>
 
-            <fieldset className="col-span-full space-y-0.5">
-              <Label>Descrição</Label>
-              <Textarea
-                className="min-h-20 resize-none"
-                {...register('description')}
-              />
-              {errors.description && (
-                <ErrorLabel>{errors.description.message}</ErrorLabel>
-              )}
-            </fieldset>
-          </div>
-
-          <DialogFooter>
-            <DialogClose>
-              <Button variant="outline">Cancelar</Button>
-            </DialogClose>
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting && <Loader2 className="size-4 mr-2 animate-spin" />}
-              {isSubmitting ? 'Criando...' : 'Confirmar'}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </form>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button variant="outline">Cancelar</Button>
+              </DialogClose>
+              <Button
+                type="button"
+                onClick={() => handleSubmit(onSubmit)()}
+                disabled={isSubmitting}
+              >
+                {isSubmitting && (
+                  <Loader2 className="size-4 mr-2 animate-spin" />
+                )}
+                {isSubmitting ? 'Criando...' : 'Confirmar'}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </form>
+      </FormProvider>
     </Dialog>
   )
 }

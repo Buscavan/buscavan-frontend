@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { FaPencilAlt } from 'react-icons/fa'
 import {
@@ -35,6 +35,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { WebcamCapture } from '@/components/application/webcam-capture'
 import { api } from '@/api/axios'
 import { endpoints } from '@/api/endpoints'
+import { getInitials } from '@/utils/get-initials'
 
 const profileFormSchema = z.object({
   name: z
@@ -75,10 +76,19 @@ export function ProfileForm() {
     },
   })
 
+  useEffect(() => {
+    const { name, email, cpf } = getValues()
+    if ((!name || !email || !cpf) && user && !isEditing) {
+      setValue('name', user.name)
+      setValue('email', user.email)
+      setValue('cpf', user.cpf)
+    }
+  }, [getValues, isEditing, setValue, user])
+
   async function onSubmit(data: ProfileFormSchema) {
     try {
       const response = await api.put(
-        `${endpoints.updateUser.replace('{id}', user!.id.toString())}`,
+        `${endpoints.updateUser.replace('{id}', user!.cpf.toString())}`,
         data,
       )
 
@@ -124,8 +134,13 @@ export function ProfileForm() {
 
       try {
         const response = await api.post(
-          `${endpoints.uploadProfileImage.replace('{id}', user!.id.toString())}`,
+          `${endpoints.uploadProfileImage.replace('{id}', user!.cpf.toString())}`,
           formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          },
         )
 
         if (response) {
@@ -169,7 +184,9 @@ export function ProfileForm() {
             <div className="space-y-0.5 gap-4 flex items-center justify-center flex-col">
               <Avatar className="w-32 h-32">
                 <AvatarImage src={user?.fotoPerfilUrl} />
-                <AvatarFallback>{user?.name || 'CARREGANDO'}</AvatarFallback>
+                <AvatarFallback>
+                  {user?.name ? getInitials(user.name) : 'CARREGANDO'}
+                </AvatarFallback>
               </Avatar>
               <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogTrigger asChild>
@@ -239,6 +256,7 @@ export function ProfileForm() {
                     name="phone"
                     register={register}
                     errors={{}}
+                    defaultValue={user?.phone}
                     setValue={setValue}
                     getValues={getValues}
                     disabled={!isEditing}
@@ -265,6 +283,7 @@ export function ProfileForm() {
                     name="cpf"
                     register={register}
                     errors={errors}
+                    defaultValue={user?.cpf}
                     setValue={setValue}
                     getValues={getValues}
                     disabled={!isEditing}

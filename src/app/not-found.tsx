@@ -13,7 +13,7 @@ export default function NotFound() {
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-zinc-900 pb-32">
       <div className="mb-8 w-32 h-32 relative">
         <Image
-          src={'buscavan.svg'}
+          src={'/buscavan.svg'}
           alt="Buscavan Logo"
           layout="fill"
           objectFit="contain"

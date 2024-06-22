@@ -23,6 +23,7 @@ function formatPhoneNumber(value: string): string {
 interface PhoneNumberInputProps<T extends FieldValues> {
   register: UseFormRegister<T>
   name: Path<T>
+  defaultValue?: string
   errors: FieldErrors<T>
   setValue: UseFormSetValue<T>
   getValues: UseFormGetValues<T>
@@ -36,10 +37,11 @@ export function PhoneNumberInput<T extends FieldValues>({
   errors,
   setValue,
   getValues,
+  defaultValue,
   className,
   disabled,
 }: PhoneNumberInputProps<T>) {
-  const [value, setValueState] = useState<string>('')
+  const [value, setValueState] = useState<string>(defaultValue || '')
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const formattedValue = formatPhoneNumber(event.target.value)

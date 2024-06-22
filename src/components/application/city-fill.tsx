@@ -1,7 +1,13 @@
 'use client'
 
 import React, { useState, useEffect, useCallback } from 'react'
-import { Controller, Control, FieldValues, Path } from 'react-hook-form'
+import {
+  Controller,
+  Control,
+  FieldValues,
+  Path,
+  UseFormSetValue,
+} from 'react-hook-form'
 import { Check, ChevronsUpDown } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -39,7 +45,11 @@ interface City {
 
 interface CityFillProps<TFieldValues extends FieldValues = FieldValues> {
   control: Control<TFieldValues>
+  setValue: UseFormSetValue<TFieldValues>
   name: Path<TFieldValues>
+  cityKey: Path<TFieldValues>
+  stateKey?: Path<TFieldValues>
+  cityLabelKey?: Path<TFieldValues>
 }
 
 interface FillProps {
@@ -50,21 +60,33 @@ interface FillProps {
 
 export function CityFill<TFieldValues extends FieldValues>({
   control,
+  setValue,
   name,
+  cityKey,
+  stateKey,
+  cityLabelKey,
 }: CityFillProps<TFieldValues>) {
   const [states, setStates] = useState<State[]>([])
   const [cityStateList, setCityStateList] = useState<FillProps[]>([])
   const [, setSearch] = useState('')
   const [loading, setLoading] = useState(false)
+  const [statesLoaded, setStatesLoaded] = useState(false)
+  const [selectedCity, setSelectedCity] = useState<string | null>(null)
+  const [selectedCityName, setSelectedCityName] = useState<string | null>(null)
 
   useEffect(() => {
     fetchStates()
-    fetchCities()
   }, [])
+
+  useEffect(() => {
+    if (statesLoaded) {
+      fetchCities()
+    }
+  }, [statesLoaded])
 
   const fetchStates = async () => {
     try {
-      const response = await api.get(endpoints.listStates) // Adjust the endpoint as needed
+      const response = await api.get(endpoints.listStates)
       const statesData: State[] = response.data
 
       if (!Array.isArray(statesData)) {
@@ -73,6 +95,7 @@ export function CityFill<TFieldValues extends FieldValues>({
       }
 
       setStates(statesData)
+      setStatesLoaded(true)
     } catch (error) {
       console.error('Error fetching states:', error)
     }
@@ -111,9 +134,11 @@ export function CityFill<TFieldValues extends FieldValues>({
 
   const debouncedFetchCities = useCallback(
     debounce((query: string) => {
-      fetchCities(query)
-    }, 1000),
-    [states],
+      if (statesLoaded) {
+        fetchCities(query)
+      }
+    }, 200),
+    [statesLoaded, states],
   )
 
   const handleSearchChange = (value: string) => {
@@ -125,8 +150,21 @@ export function CityFill<TFieldValues extends FieldValues>({
     cityState: FillProps,
     onChange: (value: string) => void,
   ) => {
-    onChange(cityState.value)
-    // Set both stateId and cityId
+    const newValue = cityState.value === selectedCity ? '' : cityState.value
+    onChange(newValue)
+    setSelectedCity(newValue)
+    setSelectedCityName(newValue ? cityState.label : null)
+
+    if (newValue) {
+      setValue(cityKey, cityState.value as Path<TFieldValues>)
+      setValue(stateKey, cityState.stateId as Path<TFieldValues>)
+      setValue(cityLabelKey, cityState.label as Path<TFieldValues>)
+    } else {
+      setValue(cityKey, '' as Path<TFieldValues>)
+      setValue(stateKey, '' as Path<TFieldValues>)
+      setValue(cityLabelKey, '' as Path<TFieldValues>)
+    }
+
     console.log('Selected State ID:', cityState.stateId)
     console.log('Selected City ID:', cityState.value)
   }
@@ -144,45 +182,45 @@ export function CityFill<TFieldValues extends FieldValues>({
                 role="combobox"
                 className="w-full flex items-center justify-between"
               >
-                {value
-                  ? cityStateList.find((item) => item.value === value)?.label ||
-                    'Selecione uma cidade...'
-                  : 'Selecione uma cidade...'}
+                {selectedCityName || 'Selecione uma cidade...'}
                 <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-[--radix-popover-trigger-width] max-h-[--radix-popover-content-available-height] p-0">
-              <Command>
+              <Command shouldFilter={false}>
                 <CommandInput
                   placeholder="Selecione uma cidade..."
                   onValueChange={handleSearchChange}
                 />
                 <CommandList>
-                  {loading ? (
-                    <CommandEmpty>Carregando...</CommandEmpty>
-                  ) : cityStateList.length === 0 ? (
-                    <CommandEmpty>Nenhuma cidade foi encontrada.</CommandEmpty>
-                  ) : (
-                    <CommandGroup>
-                      {cityStateList.map((item) => (
-                        <CommandItem
-                          key={item.value}
-                          value={item.value}
-                          onSelect={() => handleSelect(item, onChange)}
-                        >
-                          <Check
-                            className={cn(
-                              'mr-2 h-4 w-4',
-                              value === item.value
-                                ? 'opacity-100'
-                                : 'opacity-0',
-                            )}
-                          />
-                          {item.label}
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  )}
+                  <CommandEmpty>
+                    {loading
+                      ? 'Carregando...'
+                      : 'Nenhuma cidade foi encontrada.'}
+                  </CommandEmpty>
+                  <CommandGroup>
+                    {cityStateList.length > 0 && (
+                      <>
+                        {cityStateList.map((item) => (
+                          <CommandItem
+                            key={item.value}
+                            value={item.value}
+                            onSelect={() => handleSelect(item, onChange)}
+                          >
+                            <Check
+                              className={cn(
+                                'mr-2 h-4 w-4',
+                                value === item.value
+                                  ? 'opacity-100'
+                                  : 'opacity-0',
+                              )}
+                            />
+                            {item.label}
+                          </CommandItem>
+                        ))}
+                      </>
+                    )}
+                  </CommandGroup>
                 </CommandList>
               </Command>
             </PopoverContent>

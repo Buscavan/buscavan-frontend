@@ -18,6 +18,19 @@ import {
   CardFooter,
 } from '@/components/ui/card'
 import Image from 'next/image'
+import { api } from '@/api/axios'
+import { endpoints } from '@/api/endpoints'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Dropzone } from '@/components/application/dropzone'
+import { WebcamCapture } from '@/components/application/webcam-capture'
 
 const formSchema = z.object({
   nomeMotorista: z.string().min(1, 'Nome do motorista é obrigatório'),
@@ -44,35 +57,67 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>
 
 export default function FormSettings() {
+  const { toast } = useToast()
+  const [placaValue, setPlacaValue] = useState('')
+  const [vehicleImage, setVehicleImage] = useState<File | string | null>(null)
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
     setValue,
+    formState: { errors, isSubmitting },
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
     mode: 'onChange',
+    defaultValues: {
+      nomeMotorista: '',
+      veiculo: '',
+      placa: '',
+      modelo: '',
+      capacidade: 0,
+    },
   })
-  const { toast } = useToast()
-  const [placaValue, setPlacaValue] = useState('')
 
-  const onSubmit = async (data: FormData) => {
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-    console.log(data)
+  async function onSubmit(data: FormData) {
+    try {
+      const formData = new FormData()
+      const jsonData = JSON.stringify(data)
+      formData.append('dtoString', jsonData)
+      if (vehicleImage) {
+        if (typeof vehicleImage === 'string') {
+          const response = await fetch(vehicleImage)
+          const blob = await response.blob()
+          formData.append(
+            'file',
+            new File([blob], 'vehicle.jpg', { type: 'image/jpeg' }),
+          )
+        } else {
+          formData.append('file', vehicleImage)
+        }
+      }
 
-    toast({
-      title: 'Formulário enviado',
-      description: 'As informações do veículo foram cadastradas com sucesso!',
-    })
-  }
+      const response = await api.post(endpoints.registerVehicle, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
 
-  const handlePlacaChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = event.target.value
-      .toUpperCase()
-      .replace(/[^A-Z0-9]/g, '')
-    if (inputValue.length <= 7) {
-      setPlacaValue(inputValue)
-      setValue('placa', inputValue)
+      if (response) {
+        toast({
+          title: 'Veículo cadastrado!',
+          description:
+            'As informações do veículo foram cadastradas com sucesso.',
+        })
+      } else {
+        throw new Error('Failed to register vehicle')
+      }
+    } catch (err) {
+      toast({
+        title: 'Algo deu errado!',
+        description: 'Verifique os dados e tente novamente.',
+        variant: 'destructive',
+      })
     }
   }
 
@@ -96,9 +141,48 @@ export default function FormSettings() {
                   height={160}
                   className="w-32 h-20 aspect-square bg-zinc-700 rounded-md"
                 />
-                <Button variant={'secondary'} type="button">
-                  Alterar imagem
-                </Button>
+                <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                  <DialogTrigger asChild>
+                    <Button variant={'secondary'} type="button">
+                      Alterar imagem
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Alterar Imagem</DialogTitle>
+                      <DialogDescription>
+                        Arraste e solte uma imagem ou clique para selecionar um
+                        arquivo.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <Tabs defaultValue="upload" className="w-full">
+                      <TabsList className="grid w-full grid-cols-2">
+                        <TabsTrigger value="upload">Upload</TabsTrigger>
+                        <TabsTrigger value="camera">Câmera</TabsTrigger>
+                      </TabsList>
+                      <TabsContent value="upload">
+                        <Dropzone
+                          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                          onChange={(files: any) => {
+                            setVehicleImage(files[0])
+                            setIsDialogOpen(false)
+                          }}
+                          onClose={() => {}}
+                        />
+                      </TabsContent>
+                      <TabsContent value="camera">
+                        <WebcamCapture
+                          onSave={(image) => {
+                            setVehicleImage(image)
+                            setIsDialogOpen(false)
+                          }}
+                          onRemove={() => setVehicleImage(null)}
+                          onClose={() => {}}
+                        />
+                      </TabsContent>
+                    </Tabs>
+                  </DialogContent>
+                </Dialog>
               </div>
             </div>
             <div className="flex-1 space-y-4">
@@ -129,10 +213,17 @@ export default function FormSettings() {
                   <Label>Placa</Label>
                   <Input
                     type="text"
-                    placeholder="Selecione um veículo"
+                    placeholder="Digite a placa"
                     value={placaValue}
-                    disabled={true}
-                    onChange={handlePlacaChange}
+                    onChange={(event) => {
+                      const inputValue = event.target.value
+                        .toUpperCase()
+                        .replace(/[^A-Z0-9]/g, '')
+                      if (inputValue.length <= 7) {
+                        setPlacaValue(inputValue)
+                        setValue('placa', inputValue)
+                      }
+                    }}
                   />
                   {errors.placa && (
                     <ErrorLabel>{errors.placa.message}</ErrorLabel>
@@ -142,8 +233,7 @@ export default function FormSettings() {
                   <Label>Modelo</Label>
                   <Input
                     type="text"
-                    placeholder="Selecione um veículo"
-                    disabled={true}
+                    placeholder="Digite o modelo"
                     {...register('modelo')}
                   />
                   {errors.modelo && (
@@ -156,8 +246,7 @@ export default function FormSettings() {
                     type="number"
                     min={2}
                     max={200}
-                    placeholder="Selecione um veículo"
-                    disabled={true}
+                    placeholder="Digite a capacidade"
                     {...register('capacidade', { valueAsNumber: true })}
                   />
                   {errors.capacidade && (
@@ -170,7 +259,7 @@ export default function FormSettings() {
         </CardContent>
         <CardFooter className="justify-end">
           <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? 'Salvando...' : 'Salvar alterações'}
+            {isSubmitting ? 'Salvando...' : 'Salvar veículo'}
           </Button>
         </CardFooter>
       </form>

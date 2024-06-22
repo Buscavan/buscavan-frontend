@@ -21,7 +21,6 @@ import { Input } from '@/components/ui/input'
 import { useState } from 'react'
 import { TablePagination } from '@/components/application/table-pagination'
 import { CreateTravelModal } from './create-travel-modal'
-import { useAuth } from '@/hooks/useAuth'
 
 interface TravelsTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -32,7 +31,6 @@ export function TravelsTable<TData, TValue>({
   columns,
   data,
 }: TravelsTableProps<TData, TValue>) {
-  const { user } = useAuth()
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
 
   const table = useReactTable({
@@ -60,7 +58,6 @@ export function TravelsTable<TData, TValue>({
         />
 
         <div className="ml-auto">
-          <p>{user?.role}</p>
           <CreateTravelModal />
         </div>
       </div>

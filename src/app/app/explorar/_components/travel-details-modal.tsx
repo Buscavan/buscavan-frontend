@@ -43,7 +43,7 @@ const TravelDetailsModal: React.FC<TravelDetailsModalProps> = ({ id }) => {
     return (
       <DialogContent className="max-w-2xl w-full">
         <div className="flex justify-center items-center h-full">
-          <span>Loading...</span>
+          <span>Carregando...</span>
         </div>
       </DialogContent>
     )
@@ -111,7 +111,9 @@ const TravelDetailsModal: React.FC<TravelDetailsModalProps> = ({ id }) => {
 
         <div className="col-span-1 space-y-0.5">
           <Label>Passageiros</Label>
-          <p className="text-sm text-muted-foreground">{trip.passageiros}</p>
+          <p className="text-sm text-muted-foreground">
+            {trip.veiculo.capacidade}
+          </p>
         </div>
 
         <div className="col-span-full space-y-0.5">
