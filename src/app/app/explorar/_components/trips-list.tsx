@@ -118,7 +118,7 @@ const TripsList: React.FC = () => {
                         endDate={new Date(trip.dataFinal).toLocaleDateString(
                           'pt-BR',
                         )}
-                        passengers={trip.passageiros || 0}
+                        passengers={trip.veiculo.capacidade || 0}
                       />
                       <TravelCardDescription>
                         {trip.descricao}
